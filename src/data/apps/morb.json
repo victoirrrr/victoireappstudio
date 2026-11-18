@@ -1,0 +1,60 @@
+{
+  "name": "Morb",
+  "slug": "morb",
+  "order": 2,
+  "status": "live",
+  "statusLabel": "Live",
+  "appStoreName": "Morb: One Touch Audio Enhancer",
+  "appStoreUrl": "https://apps.apple.com/us/app/morb-one-touch-audio-enhancer/id6784659337",
+  "appStoreId": "6784659337",
+  "subtitle": "Studio sound for voice & video",
+  "oneLiner": "Make a phone recording sound studio-made in one tap. Clean up hum, lift your voice, pick a sound, share.",
+  "spotlightTitle": "Morb makes a phone recording sound studio-made.",
+  "description": "Turn a raw cover video into a studio-quality take. Pick one of four sounds, set reverb and loudness, and your first three exports are free.",
+  "spotlight": {
+    "screens": [
+      "02-pick-a-sound.png",
+      "03-export-share.png",
+      "06-export.png"
+    ],
+    "card": "01-welcome.png",
+    "cardFocus": "50% 100%"
+  },
+  "chips": [
+    "One tap",
+    "Studio sounds",
+    "Share to Reels"
+  ],
+  "category": "Music",
+  "price": "Free",
+  "priceNote": "Pro $4.99/mo or $29.99/yr",
+  "ageRating": null,
+  "version": "2.1",
+  "palette": {
+    "bg": "#000000",
+    "tint": "#1C0A12",
+    "accent": "#FF4046",
+    "ink": "#FFFFFF"
+  },
+  "shelf": {
+    "field": "#FFFFFF",
+    "ink": "#11121A"
+  },
+  "icon": true,
+  "screens": [
+    "01-welcome.png",
+    "02-pick-a-sound.png",
+    "03-export-share.png",
+    "04-library.png",
+    "05-enhance.png",
+    "06-export.png",
+    "07-morb-pro.png",
+    "08-settings.png"
+  ],
+  "breakout": "breakout.png",
+  "family": null,
+  "siteUrl": "https://morbapp.com",
+  "privacyUrl": "https://morbapp.com/privacy",
+  "supportUrl": null,
+  "supportEmail": "hello@morbapp.com"
+}

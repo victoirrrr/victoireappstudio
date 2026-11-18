@@ -1,0 +1,27 @@
+---
+// /<app>/privacy and /<app>/support, from src/data/legal/<app>-<kind>.md.
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import Doc from '../../layouts/Doc.astro';
+import { getApps } from '../../lib/apps';
+
+export const getStaticPaths = (async () => {
+  const docs = await getCollection('legal');
+  return docs.map((entry) => ({ params: { app: entry.data.app, doc: entry.data.kind }, props: { entry } }));
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const app = (await getApps()).find((a) => a.slug === entry.data.app);
+const { Content } = await render(entry);
+const hasPage = app?.siteUrl === `/${app?.slug}`;
+---
+
+<Doc
+  title={entry.data.title}
+  description={entry.data.description}
+  eyebrow={`${app?.name ?? entry.data.app} · ${entry.data.kind === 'privacy' ? 'Privacy' : 'Support'}`}
+  updated={entry.data.updated}
+  back={hasPage && app ? { href: `/${app.slug}`, label: `Back to ${app.name}` } : null}
+>
+  <Content />
+</Doc>

@@ -1,0 +1,127 @@
+---
+// PRD 7.4: one screen per live app. The H2 says the app's outcome, a short paragraph and a quiet
+// link to the app's own site; below, a ref-1 app card on the left and three real screens on the
+// right, the middle one raised (a still echo of the hero arc). Rendered for every app with a
+// `spot` (see src/lib/apps.ts), so the next live app gets one from its JSON alone.
+import { Picture } from 'astro:assets';
+import AppCard from './AppCard.astro';
+import { storeLink, type App } from '../lib/apps';
+
+interface Props {
+  app: App;
+}
+const { app } = Astro.props;
+const spot = app.spot!;
+const store = storeLink(app, `spotlight-${app.slug}`);
+const host = app.siteUrl ? new URL(app.siteUrl, 'https://victoirappstudio.com').host : null;
+const label = (file: string) =>
+  file.replace(/\.[a-z]+$/i, '').replace(/^\d+[-_]/, '').replace(/[-_]/g, ' ');
+const id = `${app.slug}-spotlight`;
+---
+
+<section class="section spot" id={id} aria-labelledby={`${id}-h`} style="--h: 1">
+  <div class="wrap">
+    <div class="spot__head">
+      <h2 id={`${id}-h`}>{app.spotlightTitle}</h2>
+      <div class="spot__intro">
+        {app.description && <p>{app.description}</p>}
+        {host && app.siteUrl && (
+          <a class="link spot__site" href={app.siteUrl} rel="noopener">{host}</a>
+        )}
+      </div>
+    </div>
+
+    <div class="spot__body">
+      <AppCard
+        name={app.name}
+        pill={app.price ?? app.statusLabel}
+        body={app.subtitle ?? app.oneLiner}
+        chips={app.chips}
+        image={spot.card}
+        imagePosition={spot.cardFocus}
+        tint={app.palette.tint}
+        action={{ label: 'Download on the App Store', href: store }}
+      />
+      <div class="frame spot__screens">
+        {spot.screens.map((s, i) => (
+          <div class="spot__shot" data-i={i}>
+            <Picture
+              src={s}
+              formats={['avif']}
+              fallbackFormat="webp"
+              widths={[240, 480]}
+              sizes="(max-width: 639px) 110px, 240px"
+              alt={`${app.name} screen: ${label(app.spotlight!.screens[i])}`}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .spot__head {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--grid-gap);
+    row-gap: var(--s-4);
+    align-items: start;
+  }
+  .spot__head h2 { grid-column: 1 / span 7; }
+  .spot__intro {
+    grid-column: 8 / -1;
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+  }
+  .spot__intro p { color: var(--ink); }
+  .spot__site { font-weight: 600; font-size: 0.9375rem; min-height: 44px; display: inline-flex; align-items: center; }
+
+  .spot__body {
+    margin-top: var(--s-7);
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--grid-gap);
+    align-items: end;
+  }
+  /* the card spans grid columns so both its edges sit on the grid (3 columns = 282px at 1440) */
+  .spot__body > :global(.app-card) { grid-column: 1 / span 3; --card-w: 100%; }
+  .spot__screens {
+    grid-column: 5 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--s-6);
+  }
+  .spot__shot {
+    flex: 1 1 0;
+    max-height: calc(100svh - 340px);
+    aspect-ratio: 1320 / 2868;
+    border-radius: var(--r-tile);
+    overflow: clip;
+    box-shadow: var(--shadow-tile);
+    background: #000;
+  }
+  .spot__shot :global(picture),
+  .spot__shot :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  @media (max-width: 1279px) {
+    .spot__body > :global(.app-card) { grid-column: 1 / span 4; }
+  }
+  /* tablet: head stacked, card and screens still side by side */
+  @media (max-width: 1023px) {
+    .spot__head { grid-template-columns: 1fr; }
+    .spot__head h2, .spot__intro { grid-column: 1; }
+    .spot__body > :global(.app-card) { grid-column: 1 / span 5; }
+    .spot__screens { grid-column: 6 / -1; gap: var(--s-4); }
+    .spot__shot { max-height: none; border-radius: 18px; }
+  }
+  /* phone: one screen. The card (a real screen crop) carries the visual; the three-screen row
+     would split across two screens and leave the second one empty, so it stays off. */
+  @media (max-width: 639px) {
+    .spot__body { grid-template-columns: 1fr; margin-top: var(--s-6); }
+    .spot__body > :global(.app-card) { grid-column: 1; --card-h: 400px; }
+    .spot__screens { display: none; }
+  }
+</style>

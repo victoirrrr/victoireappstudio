@@ -1,0 +1,26 @@
+{
+  "name": "victoirappstudio",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build && node scripts/prune-originals.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "tiles": "node scripts/make-tiles.mjs",
+    "breakouts": "node scripts/make-breakouts.mjs",
+    "og": "node scripts/make-og.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "astro": "^7.4.12",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/node": "^26.6.6",
+    "typescript": "^6.0.3"
+  }
+}

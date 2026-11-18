@@ -1,0 +1,116 @@
+---
+// PRD 7.5: "The Kit family", the ref-1 layout: tall cards side by side, one per family app, in
+// roster order. Each card shows the best thing the app has: a real screen, else its icon on its
+// tint, else a plain pill-shaped placeholder (GLP-1). Any app with family "kit" joins the row.
+import { Picture } from 'astro:assets';
+import AppCard from './AppCard.astro';
+import { getFamily } from '../lib/apps';
+
+const family = await getFamily('kit');
+const span = Math.max(3, Math.floor(12 / Math.max(1, family.length)));
+const cards = family.map((app) => ({
+  app,
+  image: app.screenImages[0] ?? null,
+  // An app with its own page here links to it ("See Kit"); one without a page says when it comes.
+  action:
+    app.siteUrl === `/${app.slug}`
+      ? { label: `See ${app.name}`, href: app.siteUrl }
+      : { label: app.status === 'planned' ? `Coming ${app.statusLabel}` : 'Coming soon', href: null },
+}));
+const [first, ...rest] = cards;
+---
+
+<section class="section kf" id="kit-family" aria-labelledby="kit-family-h" style={`--h: 1; --span: ${span}`}>
+  <div class="wrap kf__layout">
+    <div class="kf__g1">
+      <div class="kf__head">
+        <h2 id="kit-family-h">The Kit family</h2>
+        <p>Small tools to drink less, quit pouches and stay on track. They work alone and better together.</p>
+      </div>
+      {first && (
+        <AppCard name={first.app.name} pill={first.app.statusLabel} body={first.app.oneLiner} chips={first.app.chips}
+          image={first.image} imagePosition="50% 30%" tint={first.app.palette.tint} action={first.action} />
+      )}
+    </div>
+    <div class="kf__g2">
+      {rest.map((c) => (
+        <AppCard name={c.app.name} pill={c.app.statusLabel} body={c.app.oneLiner} chips={c.app.chips}
+          image={c.image} imagePosition="50% 24%" tint={c.app.palette.tint} action={c.action}>
+          <div slot="media" class="frame kf__field" style={`--fc:${c.app.palette.bg};--ac:${c.app.palette.accent}`}>
+            {c.app.iconImage ? (
+              <Picture class="kf__icon" src={c.app.iconImage} formats={['avif']} fallbackFormat="webp" width={128} height={128} densities={[1, 2]} alt={`${c.app.name} app icon`} />
+            ) : (
+              <span class="kf__capsule" role="img" aria-label={`${c.app.name}, planned`}></span>
+            )}
+          </div>
+        </AppCard>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .kf__layout {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--grid-gap);
+    row-gap: var(--s-7);
+    align-items: start;
+  }
+  .kf__g1, .kf__g2 { display: contents; }
+  .kf__head {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .kf__head p { max-width: 62ch; }
+  .kf__layout :global(.app-card) {
+    grid-column: span var(--span);
+    --card-w: 100%;
+    --card-h: 540px;
+  }
+
+  /* media for apps without a screen yet: the app's own field, its icon, or a pill shape */
+  .kf__field {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    /* --fc/--ac, not --a: the hero registers --a as an <angle> */
+    background: radial-gradient(70% 70% at 50% 45%, color-mix(in oklab, var(--ac) 34%, var(--fc)), var(--fc) 75%);
+  }
+  :global(.app-card__media) .kf__field :global(picture) { width: auto; height: auto; }
+  .kf__field :global(.kf__icon) {
+    width: 128px;
+    height: 128px;
+    border-radius: 28px;
+    box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.6);
+  }
+  .kf__capsule {
+    width: 132px;
+    height: 52px;
+    border-radius: var(--r-pill); /* unslop-ignore: this is a drawn GLP-1 pill, the shape is the subject */
+    background: linear-gradient(90deg, var(--ac) 50%, color-mix(in oklab, var(--ac) 30%, #fff) 50%);
+    filter: blur(0.5px);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12), 0 24px 48px -20px rgb(0 0 0 / 0.6);
+    rotate: -18deg;
+  }
+
+  @media (max-width: 1279px) {
+    .kf__layout :global(.app-card) { --card-h: 440px; }
+  }
+  @media (max-width: 1023px) {
+    .kf__layout :global(.app-card) { --card-h: 560px; }
+  }
+
+  /* phone: two screens. Screen one holds the heading and the first card, screen two the rest. */
+  @media (max-width: 639px) {
+    .kf { --h: 2 !important; }
+    .kf__layout { display: block; }
+    .kf__g1, .kf__g2 { display: grid; gap: var(--s-4); }
+    /* group one fills the first screen, so group two starts --padt under the second screen's top */
+    .kf__g1 { min-height: 100lvh; align-content: start; gap: var(--s-6); }
+    .kf__layout :global(.app-card) { --card-h: 340px; }
+    .kf__layout :global(.app-card__chips) { display: none; }
+  }
+</style>

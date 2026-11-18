@@ -1,0 +1,38 @@
+{
+  "name": "Kit Pouch",
+  "slug": "kit-pouch",
+  "order": 4,
+  "status": "in-progress",
+  "statusLabel": "In the works",
+  "appStoreName": null,
+  "appStoreUrl": null,
+  "appStoreId": null,
+  "subtitle": null,
+  "oneLiner": "A calm plan to quit nicotine pouches, one day at a time.",
+  "kind": "a plan to quit nicotine pouches",
+  "spotlightTitle": null,
+  "chips": [
+    "Quit plan",
+    "Cravings help",
+    "Progress"
+  ],
+  "category": null,
+  "price": null,
+  "priceNote": null,
+  "ageRating": null,
+  "version": null,
+  "palette": {
+    "bg": "#0F0E0D",
+    "tint": "#1A0F0D",
+    "accent": "#E8483C",
+    "ink": "#FFFFFF"
+  },
+  "icon": true,
+  "screens": [],
+  "breakout": "breakout.png",
+  "family": "kit",
+  "siteUrl": "/kit-pouch",
+  "privacyUrl": "/kit-pouch/privacy",
+  "supportUrl": "/kit-pouch/support",
+  "supportEmail": "hello@victoirappstudio.com"
+}

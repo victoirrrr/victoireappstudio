@@ -1,0 +1,62 @@
+---
+// Plain reading page for privacy policies and support/FAQ (PRD 6): nav, one column of text, the
+// shared closing footer. Measured line length, Newsreader title, system sans body.
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  updated: Date;
+  back?: { href: string; label: string } | null;
+}
+const { title, description, eyebrow, updated, back } = Astro.props;
+const date = updated.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<Base title={`${title}: victoir app studio`} description={description}>
+  <Nav />
+  <main id="main" class="doc">
+    <article class="wrap doc__wrap">
+      <header class="doc__head">
+        <p class="doc__eyebrow">{eyebrow}</p>
+        <h1>{title}</h1>
+        <p class="doc__updated">Last updated {date}</p>
+        {back && <a class="link doc__back" href={back.href}>{back.label}</a>}
+      </header>
+      <div class="doc__body">
+        <slot />
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .doc { padding-top: calc(var(--nav-h) + var(--s-8)); padding-bottom: var(--s-9); }
+  .doc__wrap { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--grid-gap); }
+  .doc__head, .doc__body { grid-column: 1 / span 8; }
+  .doc__head { display: grid; gap: var(--s-3); justify-items: start; margin-bottom: var(--s-8); }
+  .doc__eyebrow { font-size: var(--fs-small); font-weight: 600; color: var(--ink-2); }
+  .doc__head h1 { font-size: clamp(2.5rem, 1.9rem + 2.4vw, 4rem); line-height: 1.04; }
+  .doc__updated { color: var(--ink-2); font-size: 0.9375rem; }
+  .doc__back { font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
+
+  .doc__body { max-width: 68ch; }
+  .doc__body :global(h2) { font-size: var(--fs-h3); font-family: var(--font-sans); font-weight: 600; letter-spacing: 0; margin-top: var(--s-7); margin-bottom: var(--s-3); line-height: 1.25; }
+  .doc__body :global(h3) { font-size: 1.0625rem; margin-top: var(--s-5); margin-bottom: var(--s-2); }
+  .doc__body :global(p), .doc__body :global(li) { color: var(--ink); }
+  .doc__body :global(p + p) { margin-top: var(--s-4); }
+  .doc__body :global(ul), .doc__body :global(ol) { padding-left: 1.25em; margin-block: var(--s-3) var(--s-4); display: grid; gap: var(--s-2); }
+  .doc__body :global(a) { color: var(--ink); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  .doc__body :global(a:hover) { text-decoration-color: var(--crimson); }
+  .doc__body :global(strong) { font-weight: 600; }
+  .doc__body :global(table) { width: 100%; border-collapse: collapse; margin-block: var(--s-4); font-size: 0.9375rem; }
+  .doc__body :global(th), .doc__body :global(td) { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+
+  @media (max-width: 1023px) {
+    .doc__head, .doc__body { grid-column: 1 / -1; }
+  }
+</style>

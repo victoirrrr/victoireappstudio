@@ -1,0 +1,59 @@
+{
+  "name": "Kwesti",
+  "slug": "kwesti",
+  "order": 1,
+  "status": "live",
+  "statusLabel": "Live",
+  "appStoreName": "Kwesti - Weekly Side Quests",
+  "appStoreUrl": "https://apps.apple.com/us/app/kwesti-weekly-side-quests/id6770004221",
+  "appStoreId": "6770004221",
+  "subtitle": "Mindful moments, photo journal",
+  "oneLiner": "Three small real-world side quests every Monday. Live one, snap a photo, keep it as a print. No streaks.",
+  "spotlightTitle": "Kwesti gives you three small things every Monday.",
+  "description": "Every Monday you get three small things to do out in the world. Swap one that doesn't fit, live it, and keep the photo as a print of your year.",
+  "spotlight": {
+    "screens": [
+      "01_side-quests.png",
+      "03_photo-journal.png",
+      "06_no-pressure.png"
+    ],
+    "card": "05_self-care-ideas.png",
+    "cardFocus": "50% 54%"
+  },
+  "chips": [
+    "Weekly quests",
+    "Photo prints",
+    "No streaks"
+  ],
+  "category": "Health & Fitness",
+  "price": "Free",
+  "priceNote": null,
+  "ageRating": "4+",
+  "version": "3.0",
+  "palette": {
+    "bg": "#0C0A0E",
+    "tint": "#1A1418",
+    "accent": "#FF4A38",
+    "ink": "#ECE6DA"
+  },
+  "shelf": {
+    "lockup": "display"
+  },
+  "icon": true,
+  "screens": [
+    "01_side-quests.png",
+    "02_swipe-to-live.png",
+    "03_photo-journal.png",
+    "04_scrapbook.png",
+    "05_self-care-ideas.png",
+    "06_no-pressure.png",
+    "07_private.png",
+    "08_share.png"
+  ],
+  "breakout": "breakout.png",
+  "family": null,
+  "siteUrl": "https://kwesti.co",
+  "privacyUrl": "https://kwesti.co/privacy",
+  "supportUrl": "https://kwesti.co",
+  "supportEmail": null
+}

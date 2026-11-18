@@ -1,0 +1,293 @@
+---
+// PRD 7.2 / DESIGN.md signature element: a half-ring of real app tiles arcing over the headline,
+// clipped by the bottom of the first screen. Tiles come from src/data/hero-tiles.json; any app with
+// an icon that the list does not mention is appended, so a new app shows up here with no code change.
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { getApps } from '../lib/apps';
+import tileData from '../data/hero-tiles.json';
+
+const apps = await getApps();
+const bySlug = new Map(apps.map((a) => [a.slug, a]));
+const crops = import.meta.glob<{ default: ImageMetadata }>('/src/assets/tiles/*.png', { eager: true });
+
+type Tile = { id: string; image: ImageMetadata; alt: string };
+const tiles: Tile[] = [];
+for (const t of tileData.tiles) {
+  const app = bySlug.get(t.app);
+  if (!app) continue;
+  if (t.type === 'icon') {
+    if (app.iconImage) tiles.push({ id: t.id, image: app.iconImage, alt: '' });
+  } else {
+    const mod = crops[`/src/assets/tiles/${t.id}.png`];
+    if (!mod) throw new Error(`[hero] tile ${t.id} missing. Run npm run tiles.`);
+    tiles.push({ id: t.id, image: mod.default, alt: '' });
+  }
+}
+const listed = new Set(tileData.tiles.map((t) => t.app));
+for (const app of apps) {
+  if (!listed.has(app.slug) && app.iconImage) tiles.push({ id: `${app.slug}-icon`, image: app.iconImage, alt: '' });
+}
+
+// Spread the tiles evenly from just above the left horizon (174deg) to just above the right (6deg),
+// so the end tiles still show above the fold.
+const A0 = 174;
+const A1 = 6;
+const step = tiles.length > 1 ? (A0 - A1) / (tiles.length - 1) : 0;
+const placed = tiles.map((t, i) => ({ ...t, angle: +(A0 - i * step).toFixed(2), i }));
+const mid = (tiles.length - 1) / 2;
+---
+
+<section class="hero" data-enter aria-labelledby="hero-h">
+  <div class="hero__art">
+    <div class="ring">
+      {placed.map((t) => (
+        <div
+          class="tile"
+          style={`--a:${t.angle}deg;--i:${Math.abs(t.i - mid)};z-index:${tiles.length - Math.round(Math.abs(t.i - mid))}`}
+        >
+          <Picture
+            src={t.image}
+            formats={['avif']} fallbackFormat="webp"
+            widths={[176, 260, 520]}
+            sizes="(max-width: 767px) 176px, 260px"
+            alt={t.alt}
+            loading="eager"
+            decoding="async"
+            fetchpriority="low"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="wrap">
+  <div class="hero-text">
+    <h1 id="hero-h">Apps that stay quiet until they help.</h1>
+    <p class="hero__lead">
+      I'm Vijay. I make iOS apps for side quests, better&#8209;sounding covers and drinking less.
+    </p>
+    <a class="btn btn--primary btn--arrow" href="#apps">
+      See the apps
+      <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8" /><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" /></svg>
+    </a>
+    <ul class="hero__apps" aria-label="The apps">
+      {apps.map((app) => (
+        <li data-status={app.status}>
+          {app.iconImage ? (
+            <Picture src={app.iconImage} formats={['avif']} fallbackFormat="webp" width={28} height={28} densities={[1, 2]} alt="" />
+          ) : (
+            <span class="hero__apps-blank" style={`--c:${app.palette.bg}`} aria-hidden="true" />
+          )}
+          <span class="hero__apps-name">{app.name}</span>
+          <span class="hero__apps-status">{app.statusLabel}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  </div>
+</section>
+
+<style>
+  @property --a {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 90deg;
+  }
+
+  .hero {
+    /* Geometry of the arc. The top tile's centre sits just under the nav; everything else follows. */
+    --tile: clamp(76px, 12.2vw, 176px);
+    --R: min(84svh, 56vw);
+    --top: calc(var(--nav-h) + 24px + var(--tile) / 2);
+    --cy: calc(var(--top) + var(--R));
+    --text-top: calc(var(--top) + var(--tile) + 48px);
+
+    position: relative;
+    height: 100svh;
+    min-height: 600px;
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  /* ---------- the ring */
+  .hero__art {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .ring {
+    position: absolute;
+    left: 50%;
+    top: var(--cy);
+    width: 0;
+    height: 0;
+  }
+  .tile {
+    position: absolute;
+    width: var(--tile);
+    height: var(--tile);
+    left: calc(var(--tile) / -2);
+    top: calc(var(--tile) / -2);
+    border-radius: calc(var(--tile) * 0.16); /* 28px at 176 */
+    overflow: clip;
+    box-shadow: var(--shadow-tile);
+    /* polar placement: turn to the angle, walk out R, turn back upright, then lean along the arc */
+    transform: rotate(calc(-1 * var(--a))) translateX(var(--R)) rotate(var(--a))
+      rotate(calc((90deg - var(--a)) * 0.32));
+  }
+  .tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.3);
+  }
+  .tile :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Load: the tiles fan out from the top of the arc to their places (PRD 7.2: 600ms, 40ms stagger,
+     centre first). Transform only, nothing is hidden. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html:not([data-motion='off'])) .tile {
+      animation: fan var(--t-slow) var(--ease) both;
+      animation-delay: calc(var(--i) * 40ms);
+    }
+  }
+  @keyframes fan {
+    from { --a: 90deg; }
+  }
+
+  /* Scroll: the ring turns up to 8 degrees and lifts while the hero leaves (PRD 7.2). */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html:not([data-motion='off'])) .ring {
+        animation: ring-turn linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 100svh;
+      }
+    }
+  }
+  @keyframes ring-turn {
+    to { rotate: -8deg; translate: 0 -48px; }
+  }
+
+  /* ---------- the words */
+  .hero > .wrap {
+    position: relative;
+    z-index: 1;
+  }
+  .hero-text {
+    padding-top: var(--text-top);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-text h1 {
+    max-width: 16ch;
+  }
+  .hero__lead {
+    margin-top: var(--s-5);
+    max-width: 46ch;
+    color: var(--ink);
+    font-size: var(--fs-body);
+  }
+  .btn {
+    margin-top: var(--s-6);
+  }
+
+  /* the app strip: replaces ref 2's three feature columns (PRD 7.2) */
+  .hero__apps {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-7);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: var(--s-3);
+  }
+  .hero__apps li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding-inline: var(--s-4);
+    font-size: var(--fs-small);
+    line-height: var(--lh-small);
+    white-space: nowrap;
+  }
+  .hero__apps li + li {
+    border-left: 1px solid var(--line);
+  }
+  .hero__apps :global(img),
+  .hero__apps-blank {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    flex: none;
+  }
+  .hero__apps-blank {
+    background: var(--c);
+  }
+  .hero__apps-name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .hero__apps-status {
+    color: var(--ink-2);
+  }
+
+  /* ---------- tablet and phone */
+  @media (max-width: 1023px) {
+    .hero {
+      --R: min(60svh, 58vw);
+    }
+    .hero__apps li {
+      padding-inline: var(--s-3);
+    }
+  }
+  /* Portrait screens are taller than the arc needs: lower the whole composition so the
+     screen does not end on an empty band. */
+  @media (orientation: portrait) {
+    .hero {
+      --top: calc(var(--nav-h) + 24px + var(--tile) / 2 + 8svh);
+    }
+  }
+  @media (orientation: portrait) and (min-width: 768px) {
+    .hero {
+      --tile: 15vw;
+      --top: calc(var(--nav-h) + 24px + var(--tile) / 2 + 14svh);
+    }
+  }
+  @media (max-width: 767px) {
+    .hero-text > .btn { align-self: stretch; }
+    .hero {
+      --tile: 84px;
+      --R: 76vw;
+      --text-top: calc(var(--top) + var(--tile) + 32px);
+    }
+    .hero-text {
+      padding-inline: 24px;
+    }
+    /* Phone: the four apps in a 2 x 2 grid; GLP-1 (planned) waits for the Kit family section. */
+    .hero__apps {
+      margin-top: var(--s-6);
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+      column-gap: var(--s-4);
+    }
+    .hero__apps li {
+      padding-inline: 0;
+    }
+    .hero__apps li[data-status='planned'] {
+      display: none;
+    }
+    .hero__apps li + li {
+      border-left: 0;
+    }
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+// Home (PRD 7): nav, hero, shelf, spotlights, Kit family, studio note, closing footer.
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Shelf from '../components/Shelf.astro';
+import Spotlight from '../components/Spotlight.astro';
+import KitFamily from '../components/KitFamily.astro';
+import StudioNote from '../components/StudioNote.astro';
+import Footer from '../components/Footer.astro';
+import { getApps } from '../lib/apps';
+import { appJsonLd, graph } from '../lib/jsonld';
+
+const apps = await getApps();
+const spotlights = apps.filter((a) => a.spot);
+const jsonLd = graph([
+  { '@type': 'Organization', name: 'victoir app studio', url: Astro.site!.toString(), founder: { '@type': 'Person', name: 'Vijay Kumar' } },
+  ...apps.filter((a) => a.status !== 'planned').map((a) => appJsonLd(a, Astro.site!)),
+]);
+---
+
+<Base
+  title="victoir app studio: iOS apps by Vijay Kumar"
+  description="Kwesti, Morb and the Kit family: small iOS apps for side quests, better-sounding recordings and drinking less, made by one person."
+  ogImage="/og/home.png"
+  jsonLd={jsonLd}
+>
+  <Nav />
+  <main id="main">
+    <Hero />
+    <Shelf />
+    {spotlights.map((app) => <Spotlight app={app} />)}
+    <KitFamily />
+    <StudioNote />
+  </main>
+  <Footer />
+</Base>

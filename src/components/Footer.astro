@@ -1,0 +1,153 @@
+---
+// PRD 7.7 + taste-skill "the close and the footer are one section": footer.closing, one screen.
+// Row 1 is the close (a line and the page's main action again); row 2 the links and the legal row.
+// Links come from the app data. A link to a page of this site shows only once that page exists, so
+// Kit and Kit Pouch privacy/support appear on their own when Phase 8 adds those pages.
+import { getApps } from '../lib/apps';
+import { legalPaths } from '../lib/legal';
+
+const apps = await getApps();
+// Pages this site builds: the app pages (/kit) and every privacy/support Markdown file (/kit/privacy).
+const built = await legalPaths();
+for (const a of apps) if (a.siteUrl === `/${a.slug}`) built.add(a.siteUrl);
+const exists = (href: string) => !href.startsWith('/') || built.has(href);
+
+type L = { label: string; href: string };
+const support: L[] = [];
+const privacy: L[] = [];
+for (const a of apps) {
+  const s = a.supportEmail && !a.supportUrl ? `mailto:${a.supportEmail}` : a.supportUrl;
+  if (s && exists(s)) support.push({ label: a.name, href: s });
+  if (a.privacyUrl && exists(a.privacyUrl)) privacy.push({ label: a.name, href: a.privacyUrl });
+}
+const sites: L[] = apps
+  .filter((a) => a.siteUrl && /^https?:/.test(a.siteUrl))
+  .map((a) => ({ label: new URL(a.siteUrl!).host, href: a.siteUrl! }));
+
+const EMAIL = 'hello@victoirappstudio.com';
+const year = new Date().getFullYear();
+---
+
+<footer class="closing" id="support" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="close">
+      <h2 id="close-h">Support for every app</h2>
+      <p>Bugs, ideas and press questions all come to one inbox, and I answer them myself.</p>
+      <div class="close__actions">
+        <a class="btn btn--primary btn--arrow" href="/#apps">
+          See the apps
+          <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8" /><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" /></svg>
+        </a>
+        <a class="link close__mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="foot__cols">
+        <div class="foot__brand">
+          <a class="wordmark" href="/">victoir</a>
+          <p>iOS apps by Vijay Kumar</p>
+        </div>
+        <nav aria-label="Support">
+          <p class="foot__h">Support</p>
+          <ul>{support.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
+        </nav>
+        <nav aria-label="Privacy">
+          <p class="foot__h">Privacy</p>
+          <ul>{privacy.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
+        </nav>
+        <nav aria-label="App sites">
+          <p class="foot__h">App sites</p>
+          <ul>{sites.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
+        </nav>
+      </div>
+      <div class="foot__legal">
+        <p>© {year} victoir app studio</p>
+        <p>App Store is a service mark of Apple Inc.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .closing {
+    /* a little more room above the close than other sections, so the studio note's statement and
+       this heading do not share one screen; the links stand on the usual 72px floor */
+    --padt: 168px;
+    --padb: var(--s-8);
+    height: 100svh;
+    padding-block: var(--padt) var(--padb);
+  }
+  .closing > .wrap {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--s-8);
+  }
+  .close {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+  }
+  .close h2 { max-width: 16ch; font-size: clamp(2.125rem, 1.4rem + 2.9vw, 4rem); line-height: 1.08; }
+  .close p { max-width: 52ch; }
+  .close__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-5);
+    margin-top: var(--s-4);
+  }
+  .close__mail { font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
+
+  .foot {
+    border-top: 1px solid var(--line);
+    padding-top: var(--s-6);
+    display: grid;
+    gap: var(--s-7);
+  }
+  .foot__cols {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--grid-gap);
+    row-gap: var(--s-6);
+  }
+  .foot__brand { grid-column: 1 / span 6; display: grid; gap: var(--s-2); align-content: start; }
+  .foot__brand .wordmark { font-size: 1.5rem; color: var(--ink); justify-self: start; }
+  .foot__brand p { color: var(--ink-2); font-size: 0.9375rem; }
+  .foot__cols nav { grid-column: span 2; }
+  .foot__h { font-size: var(--fs-small); font-weight: 600; color: var(--ink); margin-bottom: var(--s-2); }
+  .foot__cols ul { list-style: none; padding: 0; display: grid; row-gap: var(--s-2); } /* 8px between tap targets */
+  .foot__cols a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--ink-2);
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+  .foot__cols a:hover { color: var(--ink); }
+  .foot__legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-3);
+    color: var(--ink-2);
+    font-size: var(--fs-small);
+  }
+
+  @media (max-width: 1023px) {
+    .closing { height: auto; min-height: 100svh; }
+    .foot__brand { grid-column: 1 / -1; }
+    .foot__cols nav { grid-column: span 4; }
+  }
+  @media (max-width: 639px) {
+    .close__actions { width: 100%; }
+    .close__actions .btn { width: 100%; }
+    .closing { --padt: 96px; min-height: 100lvh; }
+    .foot__cols { grid-template-columns: repeat(3, 1fr); column-gap: var(--s-4); }
+    .foot__cols nav { grid-column: span 1; }
+    .foot__legal { flex-direction: column; }
+  }
+</style>

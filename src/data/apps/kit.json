@@ -1,0 +1,46 @@
+{
+  "name": "Kit",
+  "slug": "kit",
+  "order": 3,
+  "status": "soon",
+  "statusLabel": "Soon",
+  "appStoreName": null,
+  "appStoreUrl": null,
+  "appStoreId": null,
+  "subtitle": null,
+  "oneLiner": "A quiet drink tracker with a small companion who never judges. Fewer drinks, better mornings.",
+  "kind": "a drink diary for iPhone",
+  "spotlightTitle": null,
+  "chips": [
+    "Gentle tracking",
+    "Mornings",
+    "Private"
+  ],
+  "category": null,
+  "price": null,
+  "priceNote": null,
+  "ageRating": null,
+  "version": null,
+  "palette": {
+    "bg": "#1E1E2E",
+    "tint": "#1E1E2E",
+    "accent": "#E8352B",
+    "ink": "#FFFFFF"
+  },
+  "icon": true,
+  "screens": [
+    "2-today.png",
+    "3-log.png",
+    "4-journal.png",
+    "5-insights.png",
+    "6-insights-cards.png",
+    "1-today-empty.png",
+    "7-kit-pro.png"
+  ],
+  "breakout": "breakout.png",
+  "family": "kit",
+  "siteUrl": "/kit",
+  "privacyUrl": "/kit/privacy",
+  "supportUrl": "/kit/support",
+  "supportEmail": "hello@victoirappstudio.com"
+}

@@ -1,0 +1,92 @@
+---
+// PRD 7.1: wordmark left, three links right, no CTA. Transparent over the hero;
+// canvas fill and a 1px line after 40px of scroll. Short enough to stay inline at 320.
+const links = [
+  { href: '/#apps', label: 'Apps' },
+  { href: '/#kit-family', label: 'Kit family' },
+  { href: '/#support', label: 'Support' },
+];
+---
+
+<header class="nav" data-nav>
+  <div class="wrap nav__row">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="wordmark nav__mark" href="/" aria-label="victoir app studio, home">victoir</a>
+    <nav aria-label="Main">
+      <ul class="nav__links">
+        {links.map((l) => (
+          <li><a class="nav__link" href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  if (nav) {
+    const set = () => nav.classList.toggle('is-scrolled', window.scrollY > 40);
+    set();
+    window.addEventListener('scroll', set, { passive: true });
+  }
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: var(--nav-h);
+    border-bottom: 1px solid transparent;
+    transition: background-color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  }
+  .nav.is-scrolled {
+    background: var(--canvas);
+    border-bottom-color: var(--line);
+  }
+  .nav__row {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+  }
+  .nav__mark {
+    font-size: 1.375rem;
+    color: var(--ink);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav__links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: var(--s-6);
+  }
+  .nav__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-decoration: none;
+    background: linear-gradient(currentColor, currentColor) 0 calc(100% - 10px) / 0% 1px no-repeat;
+    transition: color var(--m-out, 120ms) var(--ease), background-size var(--m-out, 120ms) var(--ease);
+  }
+  .nav__link:is(:hover, :focus-visible) {
+    color: var(--ink);
+    background-size: 100% 1px;
+    transition-duration: var(--m-in, 150ms);
+  }
+  @media (max-width: 479px) {
+    .nav__links { gap: var(--s-4); }
+    .nav__link { font-size: 0.875rem; }
+    .nav__mark { font-size: 1.25rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav__link { transition-property: color; }
+  }
+</style>
