@@ -3,7 +3,7 @@
 App portfolio site for Vijay Kumar, a solo indie iOS app maker. The site is about the APPS
 (e.g. Morb, Kit, Kwesti), not his corporate career: no CV, no consulting work.
 Goal: visitors understand each app in seconds and tap through to the App Store.
-Static site, deployed later (GitHub Pages or similar).
+Static Astro site, live on victoirappstudio.com (Cloudflare Workers static assets, deploys on push to main).
 
 Product spec: @PRD.md (what to build, section by section; owner-approved scope).
 Design system: @DESIGN.md (single source of truth; never invent colours, fonts or spacing outside it).
@@ -18,15 +18,17 @@ Design system: @DESIGN.md (single source of truth; never invent colours, fonts o
 - Real contact details ARE allowed for the owner: support email, App Store links, socials.
   (taste-skill house rule 9 about `.example` contacts does not apply to this site.)
 - App icons and screenshots are the owner's own: use the real files in src/assets/apps/<slug>/ (moved from public/ so the build optimises them).
+- v2 (22 and 23 Nov 2026, owner direction): bouncy spring motion, looping ticker, floating icons,
+  tilted screenshots, scroll entrances and a cursor ripple are WANTED. The owner saw the gate-compliant
+  version and chose this one ("Go back to bouncy"). They override the taste-skill's layout and motion
+  rules; close its gate with --done and the owner's words. Font is Apple's system stack (SF Pro).
+- Unlaunched apps (Kit, Kit Pouch, GLP-1) are anonymous "Coming soon" slots: never show their name,
+  icon, screens or copy on public pages, sitemap or footer.
+- Owner-confirmed figures only: building since 2025, 500+ downloads, 4.8 average rating.
 
-## References (ref-1-cards, ref-2-hero-arc, ref-3-app-shelf)
-- ref-2 drives the hero, ref-3 the app shelf, ref-1 the app cards and Kit family. PRD.md section 7 maps each.
-- The hero is centred by design (ref-2), but NEVER follow it with three feature columns or cards: use the app strip from PRD 7.2.
-
-## Reference first
-- Read every file in /references before designing. One primary reference drives layout;
-  others lend only the single element named in their file name.
-- Design the hero first and get it approved before building other sections.
+## Reference
+- v2 structure follows truetapp.com (section order and layout only; never its copy, images or code).
+  DESIGN.md lists the sections. The /references images (ref-1/2/3) drove v1 and are retired.
 
 ## Images, in priority order
 1. Owner's own files in src/assets/apps/<slug>/ (app icons and screenshots).

@@ -10,7 +10,7 @@ updated: 2026-11-18
 
 Kit Pouch has no account and no ads. Your plan and your logs stay on your iPhone. It uses two outside services: RevenueCat, to check your subscription, and TelemetryDeck, to count anonymous usage, which you can turn off.
 
-Kit Pouch is made by Vijay Kumar, trading as victoir app studio. If you have a question about your data, email [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).
+Kit Pouch is made by Vijay Kumar, trading as Victoir App Studio. If you have a question about your data, email [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).
 
 ## What Kit Pouch keeps on your iPhone
 

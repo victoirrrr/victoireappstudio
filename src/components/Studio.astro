@@ -1,0 +1,106 @@
+---
+// The studio: the logo on a dark tile, a short first-person note, and three facts.
+import { Image } from 'astro:assets';
+import logoLight from '../assets/brand/logo-light.png';
+
+const facts = [
+  { value: '2025', label: 'Building iOS apps since' },
+  { value: '500+', label: 'Downloads so far' },
+  { value: '4.8', label: 'Average App Store rating' },
+];
+---
+
+<section class="section studio" id="studio" aria-labelledby="studio-h">
+  <div class="wrap studio__grid">
+    <div class="studio__tile" data-pop>
+      <div class="studio__rings" aria-hidden="true"></div>
+      <Image src={logoLight} alt="Victoir App Studio logo" width={300} densities={[1, 2]} class="studio__logo" />
+    </div>
+
+    <div class="studio__text">
+      <p class="eyebrow" data-pop>The studio</p>
+      <h2 id="studio-h" data-pop style="--d:1">One person. Every app, start to finish.</h2>
+      <p class="lead" data-pop style="--d:2">
+        Victoir App Studio is me, Vijay Kumar. I design each app, build it, ship it and answer the
+        support email myself. Every one starts with something I wanted fixed in my own week.
+      </p>
+      <dl class="studio__facts" data-pop style="--d:3">
+        {facts.map((f) => (
+          <div>
+            <dt>{f.label}</dt>
+            <dd>{f.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .studio { background: var(--canvas-2); }
+  .studio__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  .studio__tile {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--r-panel);
+    background: var(--night);
+    display: grid;
+    place-items: center;
+    overflow: clip;
+    box-shadow: var(--shadow-soft);
+  }
+  .studio__rings {
+    position: absolute;
+    inset: 10%;
+    border-radius: 50%;
+    border: 1px solid var(--night-line);
+    background: radial-gradient(circle, transparent 0 calc(66% - 1px), var(--night-line) calc(66% - 1px) 66%, transparent 66%);
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    50% { transform: scale(1.06); }
+  }
+  .studio__tile :global(.studio__logo) {
+    position: relative;
+    width: 66%;
+    height: auto;
+    transition: transform var(--t-spring) var(--spring);
+  }
+  .studio__tile:hover :global(.studio__logo) { transform: scale(1.06) rotate(-2deg); }
+
+  .studio__text { display: grid; gap: var(--s-5); justify-items: start; }
+  .studio__text h2 { max-width: 13ch; }
+  .studio__facts {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--line-strong);
+    margin-top: var(--s-3);
+  }
+  .studio__facts > div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--s-1);
+    padding: var(--s-4) var(--s-4) 0;
+  }
+  .studio__facts > div + div { border-left: 1px solid var(--line-strong); }
+  .studio__facts dd { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; color: var(--crimson-text); }
+  .studio__facts dt { font-size: var(--fs-small); color: var(--ink-2); }
+
+  @media (max-width: 1023px) {
+    .studio__grid { grid-template-columns: 1fr; gap: var(--s-7); }
+    .studio__tile { max-width: 440px; width: 100%; }
+  }
+  @media (max-width: 479px) {
+    .studio__facts > div { padding-inline: var(--s-3); }
+    .studio__facts dd { font-size: 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .studio__rings { animation: none; }
+  }
+</style>

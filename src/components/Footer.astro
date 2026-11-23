@@ -1,153 +1,109 @@
 ---
-// PRD 7.7 + taste-skill "the close and the footer are one section": footer.closing, one screen.
-// Row 1 is the close (a line and the page's main action again); row 2 the links and the legal row.
-// Links come from the app data. A link to a page of this site shows only once that page exists, so
-// Kit and Kit Pouch privacy/support appear on their own when Phase 8 adds those pages.
-import { getApps } from '../lib/apps';
-import { legalPaths } from '../lib/legal';
+// Dark footer: logo and one line, then Apps, Help and Studio columns, then the legal row.
+// Only live apps are listed; nothing about unlaunched apps is public.
+import { Image } from 'astro:assets';
+import logoLight from '../assets/brand/logo-light.png';
+import { getApps, storeLink } from '../lib/apps';
 
-const apps = await getApps();
-// Pages this site builds: the app pages (/kit) and every privacy/support Markdown file (/kit/privacy).
-const built = await legalPaths();
-for (const a of apps) if (a.siteUrl === `/${a.slug}`) built.add(a.siteUrl);
-const exists = (href: string) => !href.startsWith('/') || built.has(href);
-
+const apps = (await getApps()).filter((a) => a.isLive);
 type L = { label: string; href: string };
-const support: L[] = [];
-const privacy: L[] = [];
+const appLinks: L[] = apps.flatMap((a) => {
+  const s = storeLink(a, 'footer');
+  return s ? [{ label: a.name, href: s }] : [];
+});
+const help: L[] = [];
 for (const a of apps) {
-  const s = a.supportEmail && !a.supportUrl ? `mailto:${a.supportEmail}` : a.supportUrl;
-  if (s && exists(s)) support.push({ label: a.name, href: s });
-  if (a.privacyUrl && exists(a.privacyUrl)) privacy.push({ label: a.name, href: a.privacyUrl });
+  if (a.privacyUrl) help.push({ label: `${a.name} privacy`, href: a.privacyUrl });
+  const s = a.supportUrl ?? (a.supportEmail ? `mailto:${a.supportEmail}` : null);
+  if (s) help.push({ label: `${a.name} support`, href: s });
 }
-const sites: L[] = apps
-  .filter((a) => a.siteUrl && /^https?:/.test(a.siteUrl))
-  .map((a) => ({ label: new URL(a.siteUrl!).host, href: a.siteUrl! }));
-
 const EMAIL = 'hello@victoirappstudio.com';
+const studio: L[] = [
+  { label: 'About', href: '/#studio' },
+  { label: 'Contact', href: `mailto:${EMAIL}` },
+];
 const year = new Date().getFullYear();
+const cols = [
+  { title: 'Apps', links: appLinks },
+  { title: 'Help', links: help },
+  { title: 'Studio', links: studio },
+];
 ---
 
-<footer class="closing" id="support" aria-labelledby="close-h">
+<footer class="footer">
   <div class="wrap">
-    <div class="close">
-      <h2 id="close-h">Support for every app</h2>
-      <p>Bugs, ideas and press questions all come to one inbox, and I answer them myself.</p>
-      <div class="close__actions">
-        <a class="btn btn--primary btn--arrow" href="/#apps">
-          See the apps
-          <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8" /><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" /></svg>
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href="/" aria-label="Victoir App Studio, home" class="footer__logo">
+          <Image src={logoLight} alt="" width={160} densities={[1, 2]} />
         </a>
-        <a class="link close__mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+        <p>iPhone apps made by one person, since 2025.</p>
       </div>
+      {cols.map((c) => (
+        <nav class="footer__col" aria-label={c.title}>
+          <p class="footer__title">{c.title}</p>
+          <ul>
+            {c.links.map((l) => (
+              <li><a href={l.href} rel={/^https?:/.test(l.href) ? 'noopener' : undefined}>{l.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
     </div>
-
-    <div class="foot">
-      <div class="foot__cols">
-        <div class="foot__brand">
-          <a class="wordmark" href="/">victoir</a>
-          <p>iOS apps by Vijay Kumar</p>
-        </div>
-        <nav aria-label="Support">
-          <p class="foot__h">Support</p>
-          <ul>{support.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
-        </nav>
-        <nav aria-label="Privacy">
-          <p class="foot__h">Privacy</p>
-          <ul>{privacy.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
-        </nav>
-        <nav aria-label="App sites">
-          <p class="foot__h">App sites</p>
-          <ul>{sites.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
-        </nav>
-      </div>
-      <div class="foot__legal">
-        <p>© {year} victoir app studio</p>
-        <p>App Store is a service mark of Apple Inc.</p>
-      </div>
+    <div class="footer__legal">
+      <p>© {year} Victoir App Studio</p>
+      <p>App Store is a service mark of Apple Inc.</p>
     </div>
   </div>
 </footer>
 
 <style>
-  .closing {
-    /* a little more room above the close than other sections, so the studio note's statement and
-       this heading do not share one screen; the links stand on the usual 72px floor */
-    --padt: 168px;
-    --padb: var(--s-8);
-    height: 100svh;
-    padding-block: var(--padt) var(--padb);
+  .footer {
+    background: var(--night);
+    color: var(--night-ink-2);
+    padding-block: var(--s-8) var(--s-6);
+    font-size: var(--fs-small);
   }
-  .closing > .wrap {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: var(--s-8);
-  }
-  .close {
+  .footer__top {
     display: grid;
-    gap: var(--s-4);
-    justify-items: start;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    gap: var(--s-6);
+    padding-bottom: var(--s-7);
+    border-bottom: 1px solid var(--night-line);
   }
-  .close h2 { max-width: 16ch; font-size: clamp(2.125rem, 1.4rem + 2.9vw, 4rem); line-height: 1.08; }
-  .close p { max-width: 52ch; }
-  .close__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--s-5);
-    margin-top: var(--s-4);
+  .footer__brand { display: grid; gap: var(--s-4); align-content: start; }
+  .footer__logo { display: inline-block; width: max-content; transition: transform var(--t-spring) var(--spring); }
+  .footer__logo:hover { transform: rotate(-3deg) scale(1.04); }
+  .footer__logo img { width: 160px; height: auto; }
+  .footer__title {
+    font-family: var(--font-mono);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--track-eyebrow);
+    text-transform: uppercase;
+    color: var(--night-ink);
+    margin-bottom: var(--s-3);
   }
-  .close__mail { font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
-
-  .foot {
-    border-top: 1px solid var(--line);
-    padding-top: var(--s-6);
-    display: grid;
-    gap: var(--s-7);
-  }
-  .foot__cols {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    column-gap: var(--grid-gap);
-    row-gap: var(--s-6);
-  }
-  .foot__brand { grid-column: 1 / span 6; display: grid; gap: var(--s-2); align-content: start; }
-  .foot__brand .wordmark { font-size: 1.5rem; color: var(--ink); justify-self: start; }
-  .foot__brand p { color: var(--ink-2); font-size: 0.9375rem; }
-  .foot__cols nav { grid-column: span 2; }
-  .foot__h { font-size: var(--fs-small); font-weight: 600; color: var(--ink); margin-bottom: var(--s-2); }
-  .foot__cols ul { list-style: none; padding: 0; display: grid; row-gap: var(--s-2); } /* 8px between tap targets */
-  .foot__cols a {
+  .footer__col ul { list-style: none; padding: 0; }
+  .footer__col a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    color: var(--ink-2);
     text-decoration: none;
-    font-size: 0.9375rem;
+    transition: color var(--t-fast) var(--ease), transform var(--t-spring) var(--spring);
   }
-  .foot__cols a:hover { color: var(--ink); }
-  .foot__legal {
+  .footer__col a:hover { color: var(--night-ink); transform: translateX(4px); }
+  .footer__legal {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: var(--s-3);
-    color: var(--ink-2);
-    font-size: var(--fs-small);
+    gap: var(--s-2) var(--s-5);
+    padding-top: var(--s-5);
   }
-
   @media (max-width: 1023px) {
-    .closing { height: auto; min-height: 100svh; }
-    .foot__brand { grid-column: 1 / -1; }
-    .foot__cols nav { grid-column: span 4; }
+    .footer__top { grid-template-columns: repeat(3, 1fr); }
+    .footer__brand { grid-column: 1 / -1; }
   }
-  @media (max-width: 639px) {
-    .close__actions { width: 100%; }
-    .close__actions .btn { width: 100%; }
-    .closing { --padt: 96px; min-height: 100lvh; }
-    .foot__cols { grid-template-columns: repeat(3, 1fr); column-gap: var(--s-4); }
-    .foot__cols nav { grid-column: span 1; }
-    .foot__legal { flex-direction: column; }
+  @media (max-width: 479px) {
+    .footer__top { grid-template-columns: 1fr 1fr; }
   }
 </style>

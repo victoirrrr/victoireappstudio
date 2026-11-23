@@ -1,0 +1,258 @@
+---
+// The dark apps section: a numbered list on the right (live apps you can pick, then blank
+// "Coming soon" slots with no names), and the picked app on the left: its App Store screenshot,
+// number and category, name, one line and links. Click or arrow keys switch; the screenshot springs.
+import { Picture } from 'astro:assets';
+import { getApps, storeLink } from '../lib/apps';
+import Sparkle from './Sparkle.astro';
+
+const apps = await getApps();
+const live = apps.filter((a) => a.isLive && a.promoImages);
+const soonCount = apps.filter((a) => !a.isLive).length;
+const pad = (n: number) => String(n).padStart(2, '0');
+const word = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six'];
+const arrow = '<path d="M3 9 9 3M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />';
+---
+
+<section class="section apps" id="apps" aria-labelledby="apps-h">
+  <div class="wrap">
+    <div class="apps__head">
+      <div data-pop>
+        <p class="eyebrow">The apps</p>
+        <h2 id="apps-h">{word[live.length] ?? live.length} apps out. <span class="apps__dim">{word[soonCount] ?? soonCount} on the way.</span></h2>
+      </div>
+      <p class="apps__intro" data-pop style="--d:1">
+        Every app is designed, built and supported by me. Pick one to see it, then tap through to the App Store.
+      </p>
+    </div>
+
+    <div class="apps__body">
+      <div class="stage" data-pop style="--d:1">
+        <div class="stage__ring" aria-hidden="true"></div>
+        {live.map((a, i) => {
+          const store = storeLink(a, 'apps');
+          return (
+            <div class="panel" id={`panel-${a.slug}`} role="tabpanel" aria-labelledby={`tab-${a.slug}`} data-panel={a.slug} hidden={i !== 0}>
+              <div class="panel__shot">
+                <Picture src={a.promoImages!.list} formats={['avif']} fallbackFormat="webp" widths={[300, 600]} sizes="(max-width: 767px) 60vw, 300px" alt={`${a.name} on the App Store: ${a.subtitle ?? a.tagline}`} />
+              </div>
+              <div class="panel__text">
+                <p class="panel__meta">{pad(i + 1)} / {a.category}</p>
+                <h3 id={a.slug}>{a.name}</h3>
+                <p class="panel__line">{a.oneLiner}</p>
+                <div class="panel__links">
+                  {store && <a class="link-arrow panel__store" href={store} rel="noopener">View {a.name} on the App Store <svg viewBox="0 0 12 12" aria-hidden="true" set:html={arrow} /></a>}
+                  {a.siteUrl && /^https?:/.test(a.siteUrl) && <a class="link-arrow panel__site" href={a.siteUrl} rel="noopener">{new URL(a.siteUrl).host}</a>}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <ol class="list" role="tablist" aria-label="Pick an app" aria-orientation="vertical" data-pop style="--d:2">
+        {live.map((a, i) => (
+          <li>
+            <button class="row" role="tab" id={`tab-${a.slug}`} aria-controls={`panel-${a.slug}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-tab={a.slug}>
+              <span class="row__n">{pad(i + 1)}</span>
+              {a.iconImage && <Picture src={a.iconImage} formats={['avif']} fallbackFormat="webp" width={48} height={48} densities={[1, 2]} alt="" class="app-icon row__icon" />}
+              <span class="row__name">{a.name}<span class="row__tag">{a.tagline}</span></span>
+              <svg class="row__arrow" viewBox="0 0 12 12" aria-hidden="true" set:html={arrow} />
+            </button>
+          </li>
+        ))}
+        {Array.from({ length: soonCount }, (_, i) => (
+          <li class="row row--soon">
+            <span class="row__n">{pad(live.length + i + 1)}</span>
+            <span class="app-icon app-icon--blank row__icon"><Sparkle /></span>
+            <span class="row__name">Coming soon</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+  const panels = [...document.querySelectorAll<HTMLElement>('[data-panel]')];
+  const pick = (slug: string, focus = false) => {
+    tabs.forEach((t) => {
+      const on = t.dataset.tab === slug;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
+    panels.forEach((p) => {
+      const on = p.dataset.panel === slug;
+      p.hidden = !on;
+      if (on) {
+        p.classList.remove('is-swap');
+        void p.offsetWidth; // restart the spring
+        p.classList.add('is-swap');
+      }
+    });
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => pick(t.dataset.tab!));
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      pick(tabs[(i + d + tabs.length) % tabs.length].dataset.tab!, true);
+    });
+  });
+  // deep links: /#kwesti, /#morb
+  const fromHash = () => {
+    const hash = location.hash.slice(1);
+    if (tabs.some((t) => t.dataset.tab === hash)) pick(hash);
+  };
+  fromHash();
+  addEventListener('hashchange', fromHash);
+</script>
+
+<style>
+  .apps {
+    background: var(--night);
+    color: var(--night-ink);
+    overflow: clip;
+  }
+  /* a dim crimson glow, top right */
+  .apps::before {
+    content: '';
+    position: absolute;
+    right: -15%;
+    top: -20%;
+    width: 900px;
+    height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(226 69 63 / 0.18), transparent);
+    pointer-events: none;
+  }
+  .apps .wrap { position: relative; }
+  .apps .eyebrow { color: var(--night-ink-2); margin-bottom: var(--s-4); }
+  .apps__head {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: var(--s-7);
+    align-items: end;
+    margin-bottom: var(--s-8);
+  }
+  .apps__dim { color: var(--night-ink-2); }
+  .apps__intro { color: var(--night-ink-2); font-size: var(--fs-lead); max-width: 40ch; }
+
+  .apps__body {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: var(--s-8);
+    align-items: start;
+  }
+  .list { margin-top: var(--s-6); }
+
+  /* ---------- stage */
+  .stage { position: relative; display: grid; }
+  .stage__ring {
+    position: absolute;
+    left: 50%;
+    top: 34%;
+    width: 460px;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    border: 1px solid var(--night-line);
+    background: radial-gradient(circle, transparent 0 calc(66% - 1px), var(--night-line) calc(66% - 1px) 66%, transparent 66%);
+    pointer-events: none;
+  }
+  .panel { grid-area: 1 / 1; display: grid; gap: var(--s-6); justify-items: center; }
+  .panel[hidden] { display: none; }
+  .panel__shot {
+    position: relative;
+    width: min(300px, 62vw);
+    border-radius: var(--r-card);
+    overflow: clip;
+    box-shadow: 0 50px 90px -40px rgb(0 0 0 / 0.9);
+    rotate: -3deg;
+  }
+  .panel__shot :global(img) { width: 100%; height: auto; }
+  .panel.is-swap .panel__shot { animation: swap var(--t-slow) var(--spring) both; }
+  .panel.is-swap .panel__text { animation: rise 600ms var(--spring) 80ms both; }
+  @keyframes swap {
+    from { transform: scale(0.82) rotate(-8deg) translateY(30px); opacity: 0; }
+  }
+  @keyframes rise {
+    from { transform: translateY(16px); opacity: 0; }
+  }
+
+  .panel__text {
+    width: 100%;
+    display: grid;
+    row-gap: var(--s-2);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--night-line);
+  }
+  .panel__meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--track-eyebrow);
+    text-transform: uppercase;
+    color: var(--crimson-night);
+  }
+  .panel__text h3 { font-size: var(--fs-h3); scroll-margin-top: 50vh; }
+  .panel__line { color: var(--night-ink-2); max-width: 46ch; }
+  .panel__links { display: flex; flex-wrap: wrap; gap: 0 var(--s-5); }
+  .panel__store { color: var(--crimson-night); }
+  .panel__site { color: var(--night-ink-2); font-weight: 500; }
+  .panel__site:hover { color: var(--night-ink); }
+
+  /* ---------- list */
+  .list { list-style: none; padding: 0; border-top: 1px solid var(--night-line); }
+  .list > li { border-bottom: 1px solid var(--night-line); }
+  .row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 28px 48px 1fr auto;
+    align-items: center;
+    gap: var(--s-4);
+    padding: var(--s-4) var(--s-4) var(--s-4) var(--s-3);
+    background: none;
+    border: 0;
+    border-left: 2px solid transparent;
+    color: var(--night-ink-2);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+  button.row:hover { background: rgb(255 255 255 / 0.03); color: var(--night-ink); }
+  .row[aria-selected='true'] {
+    background: linear-gradient(90deg, rgb(226 69 63 / 0.12), rgb(255 255 255 / 0.02));
+    border-left-color: var(--crimson);
+    color: var(--night-ink);
+  }
+  .row__n { font-family: var(--font-mono); font-size: var(--fs-eyebrow); color: var(--crimson-night); }
+  .row--soon .row__n { color: var(--night-ink-2); }
+  .row :global(.row__icon) { width: 48px; height: 48px; transition: transform var(--t-spring) var(--spring); }
+  button.row:hover :global(.row__icon) { transform: rotate(-8deg) scale(1.1); }
+  .row__name { display: grid; font-size: 1.0625rem; font-weight: 600; }
+  .row__tag { font-size: var(--fs-small); font-weight: 400; color: var(--night-ink-2); }
+  .row__arrow { width: 12px; height: 12px; color: var(--crimson-night); transition: transform var(--t-spring) var(--spring); }
+  button.row:hover .row__arrow { transform: translate(3px, -3px); }
+  .row--soon { cursor: default; }
+  .row--soon .row__name { font-weight: 500; color: var(--night-ink-2); }
+  .row--soon .app-icon--blank { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); }
+
+  @media (max-width: 1023px) {
+    .apps__head, .apps__body { grid-template-columns: 1fr; }
+    .apps__head { gap: var(--s-5); margin-bottom: var(--s-7); }
+    .apps__body { gap: var(--s-7); }
+    /* narrow screens: the list first, so a tap shows its app just below */
+    .list { order: -1; margin-top: 0; }
+    .stage__ring { width: 420px; }
+  }
+  @media (max-width: 767px) {
+    .stage__ring { width: 300px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .panel.is-swap .panel__shot, .panel.is-swap .panel__text { animation: none; }
+  }
+</style>

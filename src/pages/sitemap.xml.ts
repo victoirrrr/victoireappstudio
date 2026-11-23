@@ -10,8 +10,9 @@ export const GET: APIRoute = async ({ site }) => {
   const legal = await getCollection('legal');
   const paths = [
     '/',
-    ...apps.filter((a) => a.siteUrl === `/${a.slug}`).map((a) => a.siteUrl!),
-    ...legal.map((d) => `/${d.data.app}/${d.data.kind}`),
+    ...apps.filter((a) => a.isLive && a.siteUrl === `/${a.slug}`).map((a) => a.siteUrl!),
+    // policies of unlaunched apps stay reachable for App Store review but are not listed
+    ...legal.filter((d) => apps.some((a) => a.isLive && a.slug === d.data.app)).map((d) => `/${d.data.app}/${d.data.kind}`),
   ];
   const body =
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +

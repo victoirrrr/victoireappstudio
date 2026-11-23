@@ -1,0 +1,169 @@
+---
+// One featured app: its App Store screenshot on a coloured disc, and beside it the icon, a big
+// headline, a short paragraph, three rows of what it does, and the official App Store badge.
+import { Picture } from 'astro:assets';
+import { storeLink, type App } from '../lib/apps';
+
+interface Props {
+  app: App;
+  /** Put the picture on the right. */
+  flip?: boolean;
+}
+const { app, flip = false } = Astro.props;
+const f = app.feature!;
+const store = storeLink(app, `feature-${app.slug}`);
+const id = `feature-${app.slug}`;
+---
+
+<section class:list={['section', 'feature', { 'feature--flip': flip }]} id={id} aria-labelledby={`${id}-h`} style={`--app:${app.palette.accent}`}>
+  <div class="wrap feature__grid">
+    <div class="feature__art" data-pop>
+      <div class="feature__disc" aria-hidden="true"></div>
+      <div class="feature__shot">
+        <Picture src={app.promoImages!.feature} formats={['avif']} fallbackFormat="webp" widths={[340, 680]} sizes="(max-width: 767px) 70vw, 340px" alt={`${app.name} on the App Store`} />
+      </div>
+    </div>
+
+    <div class="feature__text">
+      {app.iconImage && (
+        <div data-pop>
+          <Picture src={app.iconImage} formats={['avif']} fallbackFormat="webp" width={72} height={72} densities={[1, 2]} alt={`${app.name} app icon`} class="app-icon feature__icon" />
+        </div>
+      )}
+      <p class="eyebrow" data-pop style="--d:1">Featured app · {app.category}</p>
+      <h2 id={`${id}-h`} data-pop style="--d:2">{f.title}</h2>
+      <p class="lead" data-pop style="--d:3">{f.body}</p>
+
+      <div class="feature__rows" data-pop style="--d:4">
+        <p class="feature__rows-title">{f.rowsTitle}</p>
+        <ol>
+          {f.rows.map((r, i) => (
+            <li>
+              <span class="feature__num" aria-hidden="true">{i + 1}</span>
+              <span class="feature__row-title">{r.title}</span>
+              <span class="feature__note">{r.note}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {store && (
+        <div class="feature__store" data-pop style="--d:5">
+          <a class="feature__badge" href={store} rel="noopener" aria-label={`Download ${app.name} on the App Store`}>
+            <img src="/badges/app-store-black.svg" alt="" width="120" height="40" />
+          </a>
+          <span>{app.appStoreName}</span>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .feature { overflow: clip; }
+  .feature__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  .feature--flip .feature__art { order: 2; }
+
+  /* ---------- picture */
+  .feature__art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding-block: var(--s-6);
+  }
+  .feature__disc {
+    position: absolute;
+    width: min(460px, 88%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      repeating-radial-gradient(circle, rgb(255 255 255 / 0.07) 0 1px, transparent 1px 9px),
+      radial-gradient(circle, color-mix(in oklab, var(--app) 85%, black) 0 18%, #1B1418 19% 100%);
+    box-shadow: var(--shadow-soft);
+    translate: 14% 4%;
+    animation: spin 40s linear infinite;
+  }
+  .feature--flip .feature__disc { translate: -14% 4%; }
+  /* a blurred wash of the app's colour behind everything */
+  .feature__art::before {
+    content: '';
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--app) 22%, transparent), transparent);
+    pointer-events: none;
+  }
+  .feature__shot {
+    position: relative;
+    width: min(340px, 70vw);
+    border-radius: var(--r-card);
+    overflow: clip;
+    box-shadow: var(--shadow-phone);
+    rotate: -4deg;
+    transition: rotate var(--t-spring) var(--spring), scale var(--t-spring) var(--spring);
+  }
+  .feature--flip .feature__shot { rotate: 4deg; }
+  .feature__shot:hover { rotate: 0deg; scale: 1.03; }
+  .feature__shot :global(img) { width: 100%; height: auto; }
+  @keyframes spin { to { rotate: 360deg; } }
+
+  /* ---------- words */
+  .feature__text { display: grid; gap: var(--s-5); justify-items: start; }
+  :global(.feature__icon) { width: 72px; height: 72px; transition: transform var(--t-spring) var(--spring); }
+  :global(.feature__icon:hover) { transform: rotate(-10deg) scale(1.08); }
+  .feature__text h2 { max-width: 14ch; }
+
+  .feature__rows { width: 100%; max-width: 520px; margin-top: var(--s-2); }
+  .feature__rows-title { font-size: var(--fs-small); font-weight: 600; color: var(--ink-2); margin-bottom: var(--s-3); }
+  .feature__rows ol { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+  .feature__rows li {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+    gap: var(--s-4);
+    padding-block: var(--s-3);
+    border-bottom: 1px solid var(--line);
+    transition: transform var(--t-spring) var(--spring);
+  }
+  .feature__rows li:hover { transform: translateX(6px); }
+  .feature__num {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    transition: transform var(--t-spring) var(--spring), background-color var(--t-fast) var(--ease);
+  }
+  .feature__rows li:hover .feature__num { transform: scale(1.15); background: var(--crimson-text); }
+  .feature__row-title { font-weight: 600; }
+  .feature__note { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); }
+
+  .feature__store { display: flex; align-items: center; gap: var(--s-4); margin-top: var(--s-2); }
+  .feature__store span { font-size: var(--fs-small); color: var(--ink-2); }
+  .feature__badge {
+    display: block;
+    padding: 0;
+    transition: transform var(--t-spring) var(--spring);
+  }
+  .feature__badge:hover { transform: translateY(-3px); }
+  .feature__badge img { height: 44px; width: auto; }
+
+  @media (max-width: 1023px) {
+    .feature__grid { grid-template-columns: 1fr; gap: var(--s-7); }
+    .feature--flip .feature__art { order: 0; }
+  }
+  @media (max-width: 767px) {
+    .feature__store { flex-direction: column; align-items: flex-start; gap: var(--s-2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feature__disc { animation: none; }
+  }
+</style>

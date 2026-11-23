@@ -18,7 +18,7 @@ export function appJsonLd(app: App, site: URL): Record<string, unknown> {
     url: page,
     downloadUrl: app.appStoreUrl ?? undefined,
     author: { '@type': 'Person', name: 'Vijay Kumar' },
-    publisher: { '@type': 'Organization', name: 'victoir app studio', url: site.toString() },
+    publisher: { '@type': 'Organization', name: 'Victoir App Studio', url: site.toString() },
   };
   if (app.isLive && app.price === 'Free') {
     ld.offers = { '@type': 'Offer', price: '0', priceCurrency: 'USD' };

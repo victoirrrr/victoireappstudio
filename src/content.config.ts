@@ -30,6 +30,19 @@ const apps = defineCollection({
       .object({ screens: z.array(z.string()).length(3), card: z.string(), cardFocus: z.string().default('50% 50%') })
       .optional(),
     chips: z.array(z.string()).max(3),
+    // Home v2 (DESIGN.md): a 2 to 5 word tag for the ticker and the app list.
+    tagline: z.string().optional(),
+    // App Store marketing screenshots in src/assets/apps/<slug>/promo/, by slot on the home page.
+    promo: z.object({ hero: z.string(), list: z.string(), feature: z.string(), extra: z.string() }).optional(),
+    // The featured-app section: headline, body and three rows (title + short note).
+    feature: z
+      .object({
+        title: z.string(),
+        body: z.string(),
+        rowsTitle: z.string(),
+        rows: z.array(z.object({ title: z.string(), note: z.string() })).max(4),
+      })
+      .optional(),
     category: z.string().nullable(),
     price: z.string().nullable(), // "Free", or null when unknown
     priceNote: z.string().nullable(),

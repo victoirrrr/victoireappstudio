@@ -1,6 +1,6 @@
 ---
 // Plain reading page for privacy policies and support/FAQ (PRD 6): nav, one column of text, the
-// shared closing footer. Measured line length, Newsreader title, system sans body.
+// shared closing footer. Measured line length, system sans throughout.
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -16,7 +16,7 @@ const { title, description, eyebrow, updated, back } = Astro.props;
 const date = updated.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 
-<Base title={`${title}: victoir app studio`} description={description}>
+<Base title={`${title}: Victoir App Studio`} description={description}>
   <Nav />
   <main id="main" class="doc">
     <article class="wrap doc__wrap">

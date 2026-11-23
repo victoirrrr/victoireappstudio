@@ -1,37 +1,40 @@
 ---
-// Home (PRD 7): nav, hero, shelf, spotlights, Kit family, studio note, closing footer.
+// Home (DESIGN.md v2): nav, split hero, ticker, dark apps list, one featured section per live app,
+// the studio, the contact panel, the footer. Unlaunched apps show only as blank "Coming soon" slots.
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
-import Shelf from '../components/Shelf.astro';
-import Spotlight from '../components/Spotlight.astro';
-import KitFamily from '../components/KitFamily.astro';
-import StudioNote from '../components/StudioNote.astro';
+import Apps from '../components/Apps.astro';
+import Feature from '../components/Feature.astro';
+import Studio from '../components/Studio.astro';
+import Ticker from '../components/Ticker.astro';
+import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 import { getApps } from '../lib/apps';
 import { appJsonLd, graph } from '../lib/jsonld';
 
 const apps = await getApps();
-const spotlights = apps.filter((a) => a.spot);
+const featured = apps.filter((a) => a.isLive && a.feature && a.promoImages);
 const jsonLd = graph([
-  { '@type': 'Organization', name: 'victoir app studio', url: Astro.site!.toString(), founder: { '@type': 'Person', name: 'Vijay Kumar' } },
-  ...apps.filter((a) => a.status !== 'planned').map((a) => appJsonLd(a, Astro.site!)),
+  { '@type': 'Organization', name: 'Victoir App Studio', url: Astro.site!.toString(), logo: new URL('/icon-512.png', Astro.site).toString(), founder: { '@type': 'Person', name: 'Vijay Kumar' } },
+  ...apps.filter((a) => a.isLive).map((a) => appJsonLd(a, Astro.site!)),
 ]);
 ---
 
 <Base
-  title="victoir app studio: iOS apps by Vijay Kumar"
-  description="Kwesti, Morb and the Kit family: small iOS apps for side quests, better-sounding recordings and drinking less, made by one person."
+  title="Victoir App Studio: iPhone apps by Vijay Kumar"
+  description="Kwesti and Morb: iPhone apps for weekly side quests and for phone recordings that sound studio-made, made by one person."
   ogImage="/og/home.png"
   jsonLd={jsonLd}
 >
   <Nav />
   <main id="main">
     <Hero />
-    <Shelf />
-    {spotlights.map((app) => <Spotlight app={app} />)}
-    <KitFamily />
-    <StudioNote />
+    <Ticker />
+    <Apps />
+    {featured.map((app, i) => <Feature app={app} flip={i % 2 === 1} />)}
+    <Studio />
+    <Contact />
   </main>
   <Footer />
 </Base>

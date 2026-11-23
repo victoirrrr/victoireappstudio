@@ -1,35 +1,42 @@
-/* Tokens copied from DESIGN.md (LOCKED 18 Nov 2026). Do not add values that are not in DESIGN.md. */
+/* Tokens from DESIGN.md (v2, 22 Nov 2026). Do not add values that are not in DESIGN.md. */
 :root {
-  /* Colour: site chrome */
-  --canvas: #F3F3F5;
+  /* Colour: light chrome */
+  --canvas: #F6F5F6;
+  --canvas-2: #EEECEE;      /* the studio band */
   --surface: #FFFFFF;
-  --ink: #11121A;
-  --ink-2: #5C5E6A;
-  --line: #E3E3E9;
-  --crimson: #E5322D;      /* small marks only */
-  --crimson-text: #C42620; /* crimson as small text */
+  --ink: #1D1519;           /* sampled from the logo's wordmark */
+  --ink-2: #4A4246;
+  --line: #E4E0E3;
+  --line-strong: #C9C1C6;
 
-  /* Type */
-  --font-display: 'Newsreader Variable', 'Newsreader', Georgia, serif;
-  --font-sans: -apple-system, 'SF Pro Text', 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, sans-serif;
-  --font-wordmark: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, sans-serif;
+  /* Colour: dark sections */
+  --night: #110D10;
+  --night-2: #1B1519;
+  --night-line: #2C2429;
+  --night-ink: #F6F2F4;
+  --night-ink-2: #A99FA5;
 
-  /* Fluid scale: mobile (390) to desktop (1440) */
-  --fs-hero: clamp(2.75rem, 2rem + 3.05vw, 4.75rem);  /* 44 to 76 */
-  --fs-h2: clamp(2.125rem, 1.8rem + 1.33vw, 3rem);      /* 34 to 48 */
-  --fs-h3: clamp(1.375rem, 1.33rem + 0.19vw, 1.5rem);   /* 22 to 24 */
-  --fs-body: clamp(1rem, 0.98rem + 0.1vw, 1.0625rem);   /* 16 to 17 */
-  --fs-card-title: 1.375rem;                            /* 22 */
-  --fs-card-body: 0.9375rem;                            /* 15 */
-  --fs-small: 0.8125rem;                                /* 13 */
-  --lh-hero: 1.02;
-  --lh-h2: 1.08;
-  --lh-h3: 1.2;
-  --lh-body: 1.5;
-  --lh-card-body: 1.45;
-  --lh-small: 1.4;
-  --track-display: -0.015em;
-  --track-wordmark: -0.02em;
+  /* Colour: the logo's crimson ribbon */
+  --crimson: #E2453F;       /* light end of the ribbon: marks, ticker, contact panel */
+  --crimson-deep: #A61E2E;  /* dark end of the ribbon */
+  --crimson-text: #C42620;  /* crimson as small text on light grounds (4.5:1) */
+  --crimson-night: #FF6B5E; /* crimson as small text on night grounds */
+
+  /* Type: Apple's own face (SF Pro) through the system stack; never self-hosted */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+
+  --fs-hero: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);    /* 44 to 88 */
+  --fs-h2: clamp(2.25rem, 1.5rem + 3vw, 4.25rem);       /* 36 to 68 */
+  --fs-h3: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);      /* 28 to 40 */
+  --fs-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);   /* 17 to 20 */
+  --fs-body: 1.0625rem;                                 /* 17 */
+  --fs-small: 0.875rem;                                 /* 14 */
+  --fs-eyebrow: 0.75rem;                                /* 12 */
+  --lh-tight: 1;
+  --lh-body: 1.55;
+  --track-tight: -0.035em;
+  --track-eyebrow: 0.14em;
 
   /* Spacing: 4px base */
   --s-1: 4px;
@@ -47,38 +54,39 @@
   --grid-gap: 24px;
 
   /* Radius */
-  --r-tile: 28px;
-  --r-card: 32px;
+  --r-icon: 22.5%;          /* iOS icon squircle, as a share of the icon */
+  --r-sm: 14px;
+  --r-card: 28px;
   --r-panel: 40px;
-  --r-shelf: 44px;
   --r-pill: 999px;
 
   /* Shadow */
-  --shadow-card: 0 40px 80px -30px rgba(14, 16, 32, .35);
-  --shadow-tile: 0 20px 40px -20px rgba(0, 0, 0, .25);
-  --shadow-panel: 0 30px 80px -40px rgba(14, 16, 32, .18);
+  --shadow-phone: 0 50px 90px -40px rgba(29, 10, 18, .55);
+  --shadow-icon: 0 18px 30px -14px rgba(29, 10, 18, .45);
+  --shadow-soft: 0 24px 60px -30px rgba(29, 10, 18, .30);
 
-  /* Motion */
+  /* Motion: springs, sampled from a damped spring (stiffness 170, damping 12) */
+  --spring: linear(0, 0.064, 0.218, 0.417, 0.626, 0.817, 0.973, 1.088, 1.158, 1.19, 1.191, 1.17, 1.135, 1.095, 1.055, 1.021, 0.994, 0.976, 0.966, 0.962, 0.964, 0.97, 0.977, 0.985, 0.993, 0.999, 1.003, 1.006, 1.007, 1.007, 1.006, 1.005, 1.004, 1.002, 1.001, 1);
+  --spring-soft: linear(0, 0.049, 0.16, 0.301, 0.448, 0.585, 0.706, 0.805, 0.882, 0.94, 0.981, 1.008, 1.023, 1.031, 1.033, 1.032, 1.028, 1.023, 1.018, 1.014, 1.01, 1.006, 1.004, 1.002, 1.001, 1, 0.999, 0.999, 0.999, 0.999, 1);
   --ease: cubic-bezier(.2, .7, .2, 1);
   --t-fast: 200ms;
-  --t-mid: 400ms;
-  --t-slow: 600ms;
+  --t-spring: 700ms;
+  --t-slow: 900ms;
 
   /* Controls */
   --btn-h: 48px;
   --nav-h: 72px;
 
-  /* Names the taste-skill motion layer (public/assets/motion) reads, mapped onto the tokens above.
-     No new colours: these are aliases. */
+  /* Names the taste-skill motion layer (public/assets/motion) and moments (public/assets/moments)
+     read, mapped onto the tokens above. Aliases only, no new values. */
+  --font-display: var(--font-sans);
   --action: var(--ink);
   --action-ink: #FFFFFF;
   --bg: var(--canvas);
   --card: var(--surface);
-  --line-strong: color-mix(in oklab, var(--ink) 24%, var(--canvas));
   --r-btn: var(--r-pill);
-  /* ...and the names the moments layer (public/assets/moments) reads */
-  --display-weight: 400;
-  --display-tracking: var(--track-display);
+  --display-weight: 700;
+  --display-tracking: var(--track-tight);
   --t-h2: var(--fs-h2);
   --accent: var(--crimson-text);
 }
@@ -87,14 +95,13 @@
   :root {
     --section-pad: var(--s-8);
     --gutter: 16px;
-    --grid-gap: 16px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
     --t-fast: 0ms;
-    --t-mid: 0ms;
+    --t-spring: 0ms;
     --t-slow: 0ms;
   }
 }

@@ -1,0 +1,83 @@
+---
+// The crimson band under the hero: each live app and its tag, then "More apps soon", looping.
+// It pauses on hover and stands still under reduced motion.
+import { getApps } from '../lib/apps';
+import Sparkle from './Sparkle.astro';
+
+const apps = await getApps();
+const items = [
+  ...apps.filter((a) => a.isLive).map((a) => ({ name: a.name, tag: a.tagline ?? a.subtitle ?? '' })),
+  { name: 'More apps', tag: 'Coming soon' },
+];
+const run = [...items, ...items, ...items];
+---
+
+<div class="band">
+<div class="ticker" aria-label="Apps from the studio" role="region">
+  <ul class="ticker__track">
+    {[0, 1].map((copy) => (
+      <li class="ticker__set" aria-hidden={copy === 1 ? 'true' : undefined}>
+        {run.map((it) => (
+          <span class="ticker__item">
+            <strong>{it.name}</strong>
+            <span>{it.tag}</span>
+            <Sparkle class="ticker__star" />
+          </span>
+        ))}
+      </li>
+    ))}
+  </ul>
+</div>
+</div>
+
+<style>
+  /* the band clips the tilted ticker so the page never scrolls sideways */
+  .band {
+    position: relative;
+    z-index: 1;
+    overflow: clip;
+    padding-block: var(--s-6);
+    margin-block: calc(-1 * var(--s-6)) calc(-1 * var(--s-7));
+    pointer-events: none;
+  }
+  .ticker {
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+    background: var(--crimson);
+    color: #fff;
+    overflow: clip;
+    rotate: -1.2deg;
+    width: 104%;
+    margin-left: -2%;
+    box-shadow: 0 18px 40px -24px rgb(166 30 46 / 0.7);
+  }
+  .ticker__track {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    width: max-content;
+    animation: run 40s linear infinite;
+  }
+  .ticker:hover .ticker__track { animation-play-state: paused; }
+  .ticker__set { display: flex; }
+  .ticker__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: 14px 0 14px var(--s-5);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .ticker__item span { opacity: 0.85; }
+  :global(.ticker__star) { width: 14px; height: 14px; margin-left: var(--s-2); }
+  @keyframes run {
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker__track { animation: none; }
+  }
+</style>

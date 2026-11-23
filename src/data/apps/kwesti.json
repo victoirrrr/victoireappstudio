@@ -55,5 +55,31 @@
   "siteUrl": "https://kwesti.co",
   "privacyUrl": "https://kwesti.co/privacy",
   "supportUrl": "https://kwesti.co",
-  "supportEmail": null
+  "supportEmail": null,
+  "tagline": "Weekly side quests",
+  "promo": {
+    "hero": "25.png",
+    "list": "28.png",
+    "feature": "26.png",
+    "extra": "29.png"
+  },
+  "feature": {
+    "title": "Kwesti gives you three small things every Monday.",
+    "body": "Each week you get three side quests to do out in the real world. Live one, take a photo, and keep it as a print. Miss a week and nothing breaks: there are no streaks.",
+    "rowsTitle": "Quests from a real week",
+    "rows": [
+      {
+        "title": "Watch water move for ten minutes",
+        "note": "10 min"
+      },
+      {
+        "title": "Walk barefoot on grass or sand",
+        "note": "5 min"
+      },
+      {
+        "title": "Watch the sun go down",
+        "note": "Evening"
+      }
+    ]
+  }
 }

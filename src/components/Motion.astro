@@ -1,0 +1,119 @@
+---
+// The site's motion (DESIGN.md, Motion): springy entrances for [data-pop] as they reach the screen,
+// and a soft ripple that trails a mouse or trackpad pointer. Touch screens and reduced motion get
+// neither: everything is simply shown.
+---
+
+<div class="cursor" aria-hidden="true" data-cursor></div>
+
+<script>
+  const html = document.documentElement;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pops = [...document.querySelectorAll<HTMLElement>('[data-pop]')];
+
+  if (reduced || !('IntersectionObserver' in window)) {
+    pops.forEach((el) => el.classList.add('is-in'));
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+    pops.forEach((el) => io.observe(el));
+    html.classList.add('motion-ok');
+  }
+
+  // ---------- cursor ripple: a lagging ring, faint rings left behind as the pointer moves,
+  // and one bigger ripple on click. Fine pointers only.
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const ring = document.querySelector<HTMLElement>('[data-cursor]');
+  if (fine && !reduced && ring) {
+    let x = -100, y = -100, rx = -100, ry = -100, last = 0, shown = false;
+    const drop = (px: number, py: number, big = false) => {
+      const r = document.createElement('span');
+      r.className = big ? 'ripple ripple--big' : 'ripple';
+      r.setAttribute('aria-hidden', 'true');
+      r.style.left = `${px}px`;
+      r.style.top = `${py}px`;
+      document.body.appendChild(r);
+      r.addEventListener('animationend', () => r.remove(), { once: true });
+    };
+    addEventListener('pointermove', (e) => {
+      x = e.clientX; y = e.clientY;
+      if (!shown) { rx = x; ry = y; ring.classList.add('is-on'); shown = true; }
+      const now = performance.now();
+      if (now - last > 140) { last = now; drop(x, y); }
+      const t = e.target as Element | null;
+      ring.classList.toggle('is-over', !!t?.closest('a, button, [role="tab"]'));
+    }, { passive: true });
+    addEventListener('pointerdown', (e) => drop(e.clientX, e.clientY, true), { passive: true });
+    document.addEventListener('pointerleave', () => { ring.classList.remove('is-on'); shown = false; });
+    const tick = () => {
+      rx += (x - rx) * 0.2;
+      ry += (y - ry) * 0.2;
+      ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+</script>
+
+<style is:global>
+  .cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+  .cursor.is-on { opacity: 1; }
+  .cursor::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: -14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid rgb(226 69 63 / 0.55);
+    transition: transform 500ms var(--spring), background-color 200ms ease;
+  }
+  .cursor.is-over::before {
+    transform: scale(1.6);
+    background: rgb(226 69 63 / 0.08);
+  }
+  .ripple {
+    position: fixed;
+    z-index: 99;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    border: 1px solid rgb(226 69 63 / 0.35);
+    pointer-events: none;
+    animation: ripple 900ms cubic-bezier(.2, .7, .2, 1) forwards;
+  }
+  .ripple--big {
+    border-width: 1.5px;
+    border-color: rgb(226 69 63 / 0.6);
+    animation-duration: 700ms;
+    --to: 9;
+  }
+  @keyframes ripple {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(var(--to, 5)); opacity: 0; }
+  }
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .cursor, .ripple { display: none; }
+  }
+</style>

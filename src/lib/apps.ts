@@ -22,6 +22,8 @@ export interface App extends AppData {
   iconImage: ImageMetadata | null;
   screenImages: ImageMetadata[];
   breakoutImage: ImageMetadata | null;
+  /** App Store marketing screenshots by home-page slot, when the app has them. */
+  promoImages: { hero: ImageMetadata; list: ImageMetadata; feature: ImageMetadata; extra: ImageMetadata } | null;
   /** Present when the app is live and has spotlightTitle + spotlight in its JSON. */
   spot: { screens: ImageMetadata[]; card: ImageMetadata; cardFocus: string } | null;
   isLive: boolean;
@@ -40,6 +42,14 @@ export async function getApps(): Promise<App[]> {
       iconImage: data.icon ? img(data.slug, 'icon.png') : null,
       screenImages: data.screens.map((s) => img(data.slug, `screens/${s}`)),
       breakoutImage: data.breakout ? img(data.slug, data.breakout) : null,
+      promoImages: data.promo
+        ? {
+            hero: img(data.slug, `promo/${data.promo.hero}`),
+            list: img(data.slug, `promo/${data.promo.list}`),
+            feature: img(data.slug, `promo/${data.promo.feature}`),
+            extra: img(data.slug, `promo/${data.promo.extra}`),
+          }
+        : null,
       spot:
         data.status === 'live' && data.spotlightTitle && data.spotlight
           ? {

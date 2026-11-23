@@ -10,7 +10,7 @@ updated: 2026-11-18
 
 Kit has no account, no ads, no analytics and no crash reporting. What you log stays on your iPhone. I make Kit, and I cannot see your logs.
 
-Kit is made by Vijay Kumar, trading as victoir app studio. If you have a question about your data, email [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).
+Kit is made by Vijay Kumar, trading as Victoir App Studio. If you have a question about your data, email [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).
 
 ## What Kit keeps on your iPhone
 

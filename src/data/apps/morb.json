@@ -56,5 +56,31 @@
   "siteUrl": "https://morbapp.com",
   "privacyUrl": "https://morbapp.com/privacy",
   "supportUrl": null,
-  "supportEmail": "hello@morbapp.com"
+  "supportEmail": "hello@morbapp.com",
+  "tagline": "Studio sound from a phone",
+  "promo": {
+    "hero": "20.png",
+    "list": "22.png",
+    "feature": "21.png",
+    "extra": "23.png"
+  },
+  "feature": {
+    "title": "Morb makes a phone recording sound studio-made.",
+    "body": "Open a cover video you shot on your phone, pick a sound, and Morb cleans up the hum and lifts your voice. Trim it, pick a frame, and share it straight to Reels or Shorts.",
+    "rowsTitle": "From recording to Reels",
+    "rows": [
+      {
+        "title": "Pick a sound",
+        "note": "One tap"
+      },
+      {
+        "title": "Trim it and choose a frame",
+        "note": "9:16 or 1:1"
+      },
+      {
+        "title": "Save or share anywhere",
+        "note": "MP4 or MOV"
+      }
+    ]
+  }
 }

@@ -9,3 +9,7 @@ shots/
 !.env.example
 .wrangler/
 .claude/settings.local.json
+.playwright-mcp/
+scripts/og-build/
+# owner source files (logo, badges, App Store screenshots); the site uses copies under src/ and public/
+/Assets/

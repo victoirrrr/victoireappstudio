@@ -1,5 +1,3 @@
-@import '@fontsource-variable/newsreader/opsz.css';
-@import '@fontsource-variable/hanken-grotesk/wght.css';
 @import './tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -8,8 +6,6 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  /* no smooth scrolling: an anchor or a Tab lands at once (taste-skill layout rule) */
-  scroll-behavior: auto;
 }
 
 body {
@@ -27,55 +23,51 @@ img, svg, picture, video { display: block; max-width: 100%; height: auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
 a { color: inherit; }
 
-h1, h2 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-optical-sizing: auto;
-  letter-spacing: var(--track-display);
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
   text-wrap: balance;
 }
-h1 { font-size: var(--fs-hero); line-height: var(--lh-hero); }
-h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); }
-h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); font-weight: 600; }
+h1 { font-size: var(--fs-hero); line-height: 0.98; }
+h2 { font-size: var(--fs-h2); line-height: 1.02; }
+h3 { font-size: var(--fs-h3); line-height: 1.05; }
 p { text-wrap: pretty; }
 
-/* One container for the nav, every section and the footer: its box IS the content edge. */
 .wrap {
   width: min(100% - 2 * var(--gutter), var(--content-max));
   margin-inline: auto;
 }
 
-/* Every home section is one or two screens tall (--h), top-aligned under the nav.
-   From 1024 up the box is exactly its screens; below it may grow rather than overlap. */
-.section {
-  --padt: var(--s-9);
-  --padb: var(--s-8);
-  position: relative;
-  height: calc(var(--h, 1) * 100svh);
-  padding-block: var(--padt) var(--padb);
-}
-.section > .wrap { position: relative; z-index: 1; }
-@media (max-width: 1023px) {
-  .section { height: auto; min-height: calc(var(--h, 1) * 100svh); }
-}
-@media (max-width: 639px) {
-  .section { --padt: 96px; --padb: var(--s-7); min-height: calc(var(--h, 1) * 100lvh); }
-}
-
-.wordmark {
-  font-family: var(--font-wordmark);
-  font-weight: 700;
-  letter-spacing: var(--track-wordmark);
-  text-decoration: none;
-}
+.section { position: relative; padding-block: var(--section-pad); }
 
 :focus-visible {
   outline: 2px solid var(--crimson);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-/* Buttons (DESIGN.md: primary dark pill; white pill on tinted cards). Hover and press come from the
-   motion layer; page CSS never sets a .btn's transform or transition. */
+/* ---------- small type */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--track-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--crimson);
+}
+.lead { font-size: var(--fs-lead); color: var(--ink-2); max-width: 52ch; }
+.accent { color: var(--crimson-text); }
+
+/* ---------- buttons: a spring on hover, a squish on press */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -84,17 +76,67 @@ p { text-wrap: pretty; }
   height: var(--btn-h);
   padding-inline: var(--s-5);
   border-radius: var(--r-pill);
-  border: 0;
+  border: 1px solid transparent;
   font-size: 0.9375rem;
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
+  transition: transform var(--t-spring) var(--spring), background-color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
 }
-.btn--primary { background: var(--ink); color: #fff; }
-.btn--white { background: var(--surface); color: var(--ink); font-size: 1rem; }
+.btn:hover { transform: translateY(-3px) scale(1.03); }
+.btn:active { transform: scale(0.94); transition-duration: 120ms; transition-timing-function: var(--ease); }
+.btn svg { width: 14px; height: 14px; transition: transform var(--t-spring) var(--spring); }
+.btn:hover svg { transform: translate(3px, -1px); }
+.btn--dark { background: var(--ink); color: #fff; }
+.btn--ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.btn--white { background: #fff; color: var(--ink); }
 
-/* Hidden at 1px inside the nav's .wrap until focused, then shown over the wordmark. */
+/* a text link with an arrow */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.link-arrow svg { width: 12px; height: 12px; transition: transform var(--t-spring) var(--spring); }
+.link-arrow:hover svg { transform: translate(3px, -3px); }
+
+/* the iOS icon shape */
+.app-icon {
+  border-radius: var(--r-icon);
+  overflow: clip;
+  flex: none;
+  box-shadow: var(--shadow-icon);
+}
+.app-icon img { width: 100%; height: 100%; object-fit: cover; }
+.app-icon--blank {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #2A2126, #171215);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), var(--shadow-icon);
+  color: var(--crimson);
+}
+.app-icon--blank svg { width: 38%; height: 38%; }
+
+/* ---------- bouncy entrances. Hidden from the first paint (html.js); once the motion script runs
+   (html.motion-ok) each waits for the screen. If the script never runs, .safe shows all after 2.5s. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.safe) [data-pop]:not(.is-in),
+  html.motion-ok [data-pop]:not(.is-in) {
+    opacity: 0;
+    transform: translateY(28px) scale(0.94);
+  }
+  [data-pop] {
+    transition: opacity 400ms var(--ease), transform var(--t-slow) var(--spring);
+    transition-delay: calc(var(--d, 0) * 70ms);
+  }
+}
+
+/* ---------- skip link */
 .skip-link {
   position: absolute;
   left: 0;

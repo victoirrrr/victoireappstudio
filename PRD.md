@@ -6,6 +6,12 @@ Build rules live in @CLAUDE.md. Visual tokens get extracted from this PRD into @
 
 ---
 
+> **v2 update (22 Nov 2026, owner direction).** The home page is rebuilt on truetapp.com's structure.
+> DESIGN.md v2 is the source of truth for sections, type (SF Pro system stack) and motion (bouncy springs, cursor ripple).
+> Kwesti and Morb are the live, featured apps. Kit, Kit Pouch and GLP-1 appear only as anonymous "Coming soon" slots, and their app pages are not built.
+> Sections 7 to 9 below describe v1 and are kept for history. Sections 1 to 6 and 10 to 12 still apply, except where DESIGN.md v2 differs.
+> Owner-confirmed figures: 500+ downloads and a 4.8 average rating. Showing them supersedes the v1 non-goal on ratings.
+
 ## 1. Summary
 
 victoirappstudio.com is the single studio site for Vijay Kumar's iOS apps. It presents every app in one place, sends visitors to the right App Store page, and hosts the legal and support pages that unlaunched apps (Kit, Kit Pouch, GLP-1) need for App Store submission.

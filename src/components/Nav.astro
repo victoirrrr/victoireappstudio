@@ -1,17 +1,21 @@
 ---
-// PRD 7.1: wordmark left, three links right, no CTA. Transparent over the hero;
-// canvas fill and a 1px line after 40px of scroll. Short enough to stay inline at 320.
+// Logo left, three links right. Transparent at the top; frosted canvas and a 1px line after 40px.
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo.png';
+
 const links = [
   { href: '/#apps', label: 'Apps' },
-  { href: '/#kit-family', label: 'Kit family' },
-  { href: '/#support', label: 'Support' },
+  { href: '/#studio', label: 'Studio' },
+  { href: '/#contact', label: 'Contact' },
 ];
 ---
 
 <header class="nav" data-nav>
   <div class="wrap nav__row">
     <a class="skip-link" href="#main">Skip to content</a>
-    <a class="wordmark nav__mark" href="/" aria-label="victoir app studio, home">victoir</a>
+    <a class="nav__logo" href="/" aria-label="Victoir App Studio, home">
+      <Image src={logo} alt="" width={132} densities={[1, 2]} loading="eager" fetchpriority="high" />
+    </a>
     <nav aria-label="Main">
       <ul class="nav__links">
         {links.map((l) => (
@@ -41,7 +45,9 @@ const links = [
     transition: background-color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
   }
   .nav.is-scrolled {
-    background: var(--canvas);
+    background: rgb(246 245 246 / 0.86);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
     border-bottom-color: var(--line);
   }
   .nav__row {
@@ -52,41 +58,41 @@ const links = [
     justify-content: space-between;
     gap: var(--s-5);
   }
-  .nav__mark {
-    font-size: 1.375rem;
-    color: var(--ink);
-    min-height: 44px;
+  .nav__logo {
     display: inline-flex;
     align-items: center;
+    min-height: 44px;
+    transition: transform var(--t-spring) var(--spring);
   }
+  .nav__logo:hover { transform: rotate(-3deg) scale(1.05); }
+  .nav__logo img { width: 132px; height: auto; }
   .nav__links {
     list-style: none;
     padding: 0;
     display: flex;
-    gap: var(--s-6);
+    gap: var(--s-2);
   }
   .nav__link {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+    padding-inline: var(--s-3);
+    border-radius: var(--r-pill);
     font-size: 0.9375rem;
     font-weight: 500;
     color: var(--ink-2);
     text-decoration: none;
-    background: linear-gradient(currentColor, currentColor) 0 calc(100% - 10px) / 0% 1px no-repeat;
-    transition: color var(--m-out, 120ms) var(--ease), background-size var(--m-out, 120ms) var(--ease);
+    transition: color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease),
+      transform var(--t-spring) var(--spring);
   }
-  .nav__link:is(:hover, :focus-visible) {
+  .nav__link:hover {
     color: var(--ink);
-    background-size: 100% 1px;
-    transition-duration: var(--m-in, 150ms);
+    background: rgb(29 21 25 / 0.06);
+    transform: translateY(-2px);
   }
   @media (max-width: 479px) {
-    .nav__links { gap: var(--s-4); }
-    .nav__link { font-size: 0.875rem; }
-    .nav__mark { font-size: 1.25rem; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .nav__link { transition-property: color; }
+    .nav__links { gap: 0; }
+    .nav__link { font-size: 0.875rem; padding-inline: 10px; }
+    .nav__logo img { width: 108px; }
   }
 </style>
