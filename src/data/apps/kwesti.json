@@ -81,5 +81,35 @@
         "note": "Evening"
       }
     ]
-  }
+  },
+  "rating": 4.9,
+  "reviews": [
+    {
+      "stars": 5,
+      "text": "Kwesti doesn’t want your screen time, it wants your real time. It is the perfect antidote to notification fatigue and digital burnout.",
+      "author": "VB_DC",
+      "country": "India"
+    },
+    {
+      "stars": 5,
+      "title": "More Living, Less Tracking",
+      "text": "I absolutely love the philosophy behind this app. It reminds you that life isn’t about tracking every moment but actually living it.",
+      "author": "pari0218",
+      "country": "India"
+    },
+    {
+      "stars": 5,
+      "title": "Beautiful app",
+      "text": "A very nice app with simple and easy to understand interface which does not steal your data. It has helped me to pause, take a break and reconnect with life.",
+      "author": "AntrikshP7",
+      "country": "India"
+    },
+    {
+      "stars": 5,
+      "title": "Great way of diverting your mind off",
+      "text": "Kwesti has been great in taking some time off and giving the mind to relax and gather my thoughts in. An excellent concept to help get through the busy days.",
+      "author": "Pirate king Kk",
+      "country": "Australia"
+    }
+  ]
 }

@@ -13,6 +13,8 @@ const { app, flip = false } = Astro.props;
 const f = app.feature!;
 const store = storeLink(app, `feature-${app.slug}`);
 const id = `feature-${app.slug}`;
+// five stars; --fill clips a crimson copy over a grey one
+const star = '★★★★★';
 ---
 
 <section class:list={['section', 'feature', { 'feature--flip': flip }]} id={id} aria-labelledby={`${id}-h`} style={`--app:${app.palette.accent}`}>
@@ -57,6 +59,33 @@ const id = `feature-${app.slug}`;
       )}
     </div>
   </div>
+
+  {app.reviews && app.reviews.length > 0 && (
+    <div class="wrap reviews">
+      <div class="reviews__head" data-pop>
+        <h3 id={`${id}-reviews`} class="reviews__title">What people say about {app.name}</h3>
+        {app.rating && (
+          <p class="reviews__avg">
+            <span class="reviews__num">{app.rating.toFixed(1)}</span>
+            <span class="stars stars--lg" style={`--fill:${(app.rating / 5) * 100}%`} aria-hidden="true">{star}</span>
+            <span class="reviews__label">Average rating on the App Store</span>
+          </p>
+        )}
+      </div>
+      <ul class="reviews__list">
+        {app.reviews.map((r, i) => (
+          <li class="review" data-pop style={`--d:${i + 1}`}>
+            <span class="stars" style={`--fill:${r.stars * 20}%`} role="img" aria-label={`${r.stars} out of 5 stars`}>{star}</span>
+            <blockquote>
+              {r.title && <p class="review__title">{r.title}</p>}
+              <p>{r.text}</p>
+            </blockquote>
+            <p class="review__by">{[r.author, r.country].filter(Boolean).join(' · ') || 'App Store review'}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
 </section>
 
 <style>
@@ -156,11 +185,86 @@ const id = `feature-${app.slug}`;
   .feature__badge:hover { transform: translateY(-3px); }
   .feature__badge img { height: 44px; width: auto; }
 
+  /* ---------- reviews */
+  .reviews { margin-top: var(--s-8); }
+  .reviews__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--s-4) var(--s-6);
+    padding-bottom: var(--s-5);
+    margin-bottom: var(--s-6);
+    border-bottom: 1px solid var(--line);
+  }
+  .reviews__title { font-size: var(--fs-h3); max-width: 18ch; }
+  .reviews__avg { display: grid; grid-template-columns: auto auto; align-items: center; column-gap: var(--s-3); }
+  .reviews__num { font-size: 3rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; grid-row: span 2; }
+  .reviews__label { font-size: var(--fs-small); color: var(--ink-2); }
+  .stars {
+    position: relative;
+    display: inline-block;
+    width: max-content;
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    color: var(--line-strong);
+  }
+  .stars::after {
+    content: '★★★★★';
+    position: absolute;
+    inset: 0;
+    width: var(--fill);
+    overflow: hidden;
+    color: var(--crimson);
+  }
+  .stars--lg { font-size: 1.375rem; }
+  .reviews__list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--s-4);
+  }
+  .review {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-soft);
+    rotate: var(--tilt, 0deg);
+    transition: rotate var(--t-spring) var(--spring), translate var(--t-spring) var(--spring);
+  }
+  .review:nth-child(odd) { --tilt: -0.8deg; }
+  .review:nth-child(even) { --tilt: 0.8deg; }
+  .review:hover { rotate: 0deg; translate: 0 -4px; }
+  .review blockquote { margin: 0; display: grid; gap: var(--s-2); flex: 1; }
+  .review__title { font-weight: 600; }
+  .review blockquote p:last-child { color: var(--ink-2); }
+  .review__by { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); }
+
   @media (max-width: 1023px) {
     .feature__grid { grid-template-columns: 1fr; gap: var(--s-7); }
     .feature--flip .feature__art { order: 0; }
   }
   @media (max-width: 767px) {
+    /* phones: a swipeable row instead of a tall stack */
+    .reviews__list {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 82%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(-1 * var(--gutter));
+      padding: var(--s-2) var(--gutter) var(--s-6);
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .reviews__list::-webkit-scrollbar { display: none; }
+    .review { scroll-snap-align: start; }
     .feature__store { flex-direction: column; align-items: flex-start; gap: var(--s-2); }
   }
   @media (prefers-reduced-motion: reduce) {

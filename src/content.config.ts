@@ -43,6 +43,21 @@ const apps = defineCollection({
         rows: z.array(z.object({ title: z.string(), note: z.string() })).max(4),
       })
       .optional(),
+    // Average App Store star rating (owner-confirmed) and 3 or 4 real App Store reviews, quoted as written.
+    // No review or rating count is shown on the site.
+    rating: z.number().min(1).max(5).optional(),
+    reviews: z
+      .array(
+        z.object({
+          stars: z.number().int().min(1).max(5),
+          title: z.string().optional(),
+          text: z.string(),
+          author: z.string().optional(),
+          country: z.string().optional(),
+        }),
+      )
+      .max(4)
+      .optional(),
     category: z.string().nullable(),
     price: z.string().nullable(), // "Free", or null when unknown
     priceNote: z.string().nullable(),

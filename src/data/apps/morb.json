@@ -82,5 +82,20 @@
         "note": "MP4 or MOV"
       }
     ]
-  }
+  },
+  "rating": 4.7,
+  "reviews": [
+    {
+      "stars": 5,
+      "text": "Being able to hear the changes before exporting is great. Makes finding the right sound so much easier."
+    },
+    {
+      "stars": 4,
+      "text": "I want to sing but I’m not sure how to edit. This is really helpful."
+    },
+    {
+      "stars": 5,
+      "text": "Does what it says, simple app."
+    }
+  ]
 }
