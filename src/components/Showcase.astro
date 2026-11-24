@@ -1,0 +1,139 @@
+---
+// One live app on the home page: the owner's photo of the app in use, wide, with a text card
+// over its lower corner: icon, number and category, headline, the rating with
+// one real review, the App Store badge and a link to the app's own page. Sides alternate.
+import { Picture } from 'astro:assets';
+import { storeLink, type App } from '../lib/apps';
+import Stars from './Stars.astro';
+
+interface Props {
+  app: App;
+  index: number;
+}
+const { app, index } = Astro.props;
+const flip = index % 2 === 1;
+const f = app.feature!;
+const store = storeLink(app, `showcase-${app.slug}`);
+const review = app.reviews?.[0];
+const id = `showcase-${app.slug}`;
+const arrow = '<path d="M3 9 9 3M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />';
+---
+
+<article class:list={['show', { 'show--flip': flip }]} id={app.slug} aria-labelledby={`${id}-h`}>
+  <div class="show__photo" data-pop>
+    <Picture
+      src={app.sceneImage!}
+      formats={['avif']}
+      fallbackFormat="webp"
+      widths={[640, 1000, 1400, 1774]}
+      sizes="(max-width: 1248px) calc(100vw - 48px), 1200px"
+      alt={app.scene!.alt}
+      style={`object-position:${app.scene!.focus}`}
+    />
+  </div>
+
+  <div class="show__card" data-pop style="--d:1">
+    <div class="show__top">
+      {app.iconImage && <Picture src={app.iconImage} formats={['avif']} fallbackFormat="webp" width={64} height={64} densities={[1, 2]} alt="" class="app-icon show__icon" />}
+      <p class="show__meta">{String(index + 1).padStart(2, '0')} · {app.name} · {app.category}</p>
+    </div>
+    <h3 id={`${id}-h`}>{f.title}</h3>
+
+    {app.rating && review && (
+      <figure class="show__quote">
+        <p class="show__rating"><strong>{app.rating.toFixed(1)}</strong> <Stars value={app.rating} /> <span>on the App Store</span></p>
+        <blockquote><p>“{review.text}”</p></blockquote>
+        <figcaption>{[review.author, review.country].filter(Boolean).join(' · ') || 'App Store review'}</figcaption>
+      </figure>
+    )}
+
+    <div class="show__actions">
+      {store && (
+        <a class="show__badge" href={store} rel="noopener" aria-label={`Download ${app.name} on the App Store`}>
+          <img src="/badges/app-store-black.svg" alt="" width="120" height="40" />
+        </a>
+      )}
+      <a class="link-arrow show__more" href={`/${app.slug}`}>
+        Everything about {app.name} <svg viewBox="0 0 12 12" aria-hidden="true" set:html={arrow} />
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .show {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    align-items: end;
+  }
+  :global(.show + .show) { margin-top: var(--s-8); }
+  .show__photo {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    aspect-ratio: 2 / 1;
+    height: 100%;
+    min-height: 100%;
+    border-radius: var(--r-panel);
+    overflow: clip;
+    box-shadow: var(--shadow-soft);
+  }
+  .show__photo :global(picture) { display: block; height: 100%; }
+  .show__photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale var(--t-slow) var(--ease);
+  }
+  .show__photo:hover :global(img) { scale: 1.02; }
+
+  .show__card {
+    grid-column: 1 / span 5;
+    align-self: end;
+    grid-row: 1;
+    z-index: 1;
+    margin: var(--s-6);
+    padding: var(--s-6);
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+    background: var(--surface);
+    border-radius: var(--r-card);
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 60px -30px rgba(29, 10, 18, .45);
+  }
+  .show--flip .show__card { grid-column: 8 / -1; }
+  .show__top { display: flex; align-items: center; gap: var(--s-3); }
+  .show__top :global(.show__icon) { width: 56px; height: 56px; transition: transform var(--t-spring) var(--spring); }
+  .show__top:hover :global(.show__icon) { transform: rotate(-10deg) scale(1.08); }
+  .show__meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--track-eyebrow);
+    text-transform: uppercase;
+    color: var(--crimson-text);
+  }
+  .show__card h3 { font-size: var(--fs-h3); max-width: 16ch; }
+
+  .show__quote { margin: 0; width: 100%; padding-top: var(--s-4); border-top: 1px solid var(--line); display: grid; gap: var(--s-2); }
+  .show__rating { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-small); color: var(--ink-2); }
+  .show__rating strong { font-size: 1.25rem; color: var(--ink); letter-spacing: -0.02em; }
+  .show__quote blockquote { margin: 0; }
+  .show__quote blockquote p { font-size: 1.0625rem; }
+  .show__quote figcaption { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); }
+
+  .show__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); margin-top: var(--s-2); }
+  .show__badge { display: block; transition: transform var(--t-spring) var(--spring); }
+  .show__badge:hover { transform: translateY(-3px); }
+  .show__badge img { height: 44px; width: auto; }
+  .show__more { color: var(--ink); }
+
+  @media (max-width: 1023px) {
+    .show__card, .show--flip .show__card { grid-column: 2 / span 10; grid-row: 2; margin: calc(-1 * var(--s-8)) 0 0; }
+    .show__photo { aspect-ratio: 16 / 10; height: auto; min-height: 0; }
+  }
+  @media (max-width: 767px) {
+    .show__photo { aspect-ratio: 4 / 3; border-radius: var(--r-card); }
+    .show__card, .show--flip .show__card { grid-column: 1 / -1; margin: calc(-1 * var(--s-6)) var(--s-3) 0; padding: var(--s-5); }
+  }
+</style>

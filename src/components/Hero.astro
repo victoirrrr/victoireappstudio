@@ -1,6 +1,6 @@
 ---
 // Split hero: the words on the left, the two live apps' App Store screenshots on the right with
-// their icons floating round them. Everything springs in once on load; the icons keep a slow bob.
+// their icons beside them. Everything springs in once on load.
 import { Picture } from 'astro:assets';
 import { getApps } from '../lib/apps';
 import Sparkle from './Sparkle.astro';
@@ -14,10 +14,10 @@ const [front, back] = live; // Kwesti in front, Morb behind
   <div class="wrap hero__grid">
     <div class="hero__text">
       <p class="eyebrow" data-pop style="--d:0">Indie iOS studio · Since 2025</p>
-      <h1 id="hero-h" data-pop style="--d:1">Apps that stay quiet <span class="accent">until they help.</span></h1>
+      <h1 id="hero-h" data-pop style="--d:1">Apps built with <span class="accent">real purpose.</span></h1>
       <p class="lead" data-pop style="--d:2">
-        I'm Vijay, and Victoir is my one-person studio. I make iPhone apps for weekly side quests and
-        for phone recordings that sound studio-made.
+        I'm Vijay, and Victoir is my one-person studio. Every app starts with a real need in my own
+        week: getting out into the world more, and making a phone recording sound right.
       </p>
       <div class="hero__actions" data-pop style="--d:3">
         <a class="btn btn--dark" href="#apps">
@@ -146,13 +146,9 @@ const [front, back] = live; // Kwesti in front, Morb behind
   .float--1 { left: -2%; top: 52%; }
   .float--soon { right: 10%; bottom: 0; }
   .float--soon .app-icon { width: 64px; height: 64px; }
-  .bob { animation: bob 5.5s ease-in-out infinite; }
-  .float--1 .bob { animation-delay: -1.8s; animation-duration: 6.5s; }
-  .float--soon .bob { animation-delay: -3.2s; animation-duration: 5s; }
-  @keyframes bob {
-    0%, 100% { transform: translateY(0) rotate(-4deg); }
-    50% { transform: translateY(-14px) rotate(4deg); }
-  }
+  .bob { rotate: -4deg; transition: rotate var(--t-spring) var(--spring), scale var(--t-spring) var(--spring); }
+  .float--1 .bob { rotate: 5deg; }
+  .float:hover .bob { rotate: 0deg; scale: 1.08; }
 
   /* ---------- tablet and phone */
   @media (max-width: 1023px) {
@@ -166,8 +162,5 @@ const [front, back] = live; // Kwesti in front, Morb behind
     .hero__facts li + li::before { display: none; }
     .float :global(.app-icon) { width: 64px; height: 64px; }
     .float--soon .app-icon { width: 48px; height: 48px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .bob { animation: none; }
   }
 </style>

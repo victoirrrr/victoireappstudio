@@ -53,7 +53,7 @@
   ],
   "breakout": "breakout.png",
   "family": null,
-  "siteUrl": "https://morbapp.com",
+  "siteUrl": "/morb",
   "privacyUrl": "/morb/privacy",
   "supportUrl": null,
   "supportEmail": "hello@victoirappstudio.com",
@@ -98,5 +98,10 @@
       "text": "Does what it says, simple app."
     }
   ],
-  "termsUrl": "/morb/terms"
+  "termsUrl": "/morb/terms",
+  "scene": {
+    "file": "scene.webp",
+    "alt": "An iPhone on a desk at night showing Morb’s Enhance screen, with sound presets and reverb and loudness sliders, next to headphones, a lamp and a to-do list",
+    "focus": "52% 50%"
+  }
 }

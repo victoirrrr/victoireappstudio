@@ -9,18 +9,18 @@ Scope: the studio's iOS apps only. No CV, consulting or career content.
 - **Structural reference:** truetapp.com (an indie iOS studio site). We take its section order and layout ideas only, never its copy, pictures, colours or code.
 - **The taste-skill gate:** on 23 Nov 2026 the owner tried the gate's stricter layout, then chose this bouncy version ("Go back to bouncy").
   The gate's rules on tilt, scroll entrances, loops, marquees, alternating splits and screen heights do not apply to this site.
-- Home, top to bottom:
+- Home, top to bottom (v3, 24 Nov 2026: owner chose to cut repetition and give each app its own page):
   1. **Nav:** the logo left; Apps, Studio, Contact right. Transparent at the top, frosted canvas and a 1px line after 40px.
-  2. **Hero, split:** eyebrow, headline with a crimson second half, a short first-person line, a dark pill and a ghost pill, and three facts.
-     On the right, the two live apps' App Store screenshots, tilted and overlapping, with their icons and one blank "coming soon" tile floating round them.
-  3. **Ticker:** a tilted crimson band looping each live app and its tag, then "More apps · Coming soon". It pauses on hover.
-  4. **Apps (dark):** an H2 counting the apps out and on the way.
-     - Right: a numbered tab list, live apps first, then blank "Coming soon" rows.
-     - Left: the picked app's screenshot, then its number and category, name, one-liner, App Store link and own site.
-  5. **Featured app, one per live app:** the screenshot on a slowly turning record-style disc, and beside it the icon, eyebrow, headline, paragraph, three numbered rows and the official App Store badge. Sides alternate.
-  6. **Studio:** the light logo on a dark tile, a first-person note, and three facts.
-  7. **Contact:** a crimson gradient panel with the email.
-  8. **Footer (dark):** the light logo and a line, then Apps, Help and Studio columns, then © and the Apple service-mark line.
+  2. **Hero, split:** eyebrow, "Apps built with real purpose." with the crimson second half, a short first-person line, a dark pill and a ghost pill, and three facts.
+     On the right, the two live apps' App Store screenshots, tilted and overlapping, with their icons and one blank "coming soon" tile.
+  3. **Apps:** one showcase per live app: the owner's photo of the app in use, wide, with a white card inset over its lower corner
+     (icon, number and category, headline, rating with one real review, the App Store badge, "Everything about <app>"). Sides alternate.
+  4. **Studio:** the light logo on a dark tile, a first-person note with the count of apps on the way, three facts, and the email (`#contact`).
+  5. **Footer (dark, slim):** the light logo and a line, one row of links (each app page, Studio, the email), © and the Apple service-mark line.
+- **App pages (`/<slug>`, live apps only):** intro with icon, facts, name, subtitle, one-liner, rating, the App Store badge and the price note;
+  the photo; five real screens in phone frames; what it does (title, body, three rows); every review; Help with Privacy, Terms and Email support.
+  Privacy and terms live at `/<slug>/privacy` and `/<slug>/terms`.
+- **Removed in v3:** the ticker, the dark apps list, the record discs, the contact panel and the looping motion (icon bob, disc spin, rings, twinkle).
 
 ## App roster rules
 
@@ -78,7 +78,7 @@ Banned: purple or indigo, purple-to-blue gradients, gradient text, neon glow, cr
 - **Springs:** `--spring` is a damped spring (stiffness 170, damping 12) as CSS `linear()`, and `--spring-soft` a gentler one. Hovers use 700ms springs; entrances 900ms.
 - **Entrances:** every `[data-pop]` rises 28px from 94% scale with a spring overshoot as it reaches the screen, staggered 70ms by `--d`.
 - **Hovers:** buttons lift and grow (press: squish to 94%), icons wiggle, rows nudge, screenshots straighten, logos tilt.
-- **Loops:** the hero icons bob, the featured discs turn (40s), the ticker runs (40s, pauses on hover), the studio rings breathe, and the contact star twinkles.
+- **Loops:** none since v3. Motion is entrances and hovers only.
 - **Cursor ripple (fine pointers only):** a 28px crimson ring that trails the pointer and grows over links, faint rings left every 140ms of movement, and a bigger ripple on click.
 - **Reduced motion:** no entrances, loops or cursor. Everything shows at rest.
 - Animate `transform`, `rotate`, `scale` and `opacity` only. No scroll-jacking or parallax.
@@ -104,7 +104,7 @@ Building since 2025 · 500+ downloads · 4.8 average App Store rating. Use nothi
 3. While it is not live, it is a blank "Coming soon" slot.
 
 When it goes live, set `status: "live"` and `appStoreUrl`, and add `tagline`, `promo {hero, list, feature}` and `feature {title, body, rowsTitle, rows[3]}`.
-It then appears in the ticker, the apps list, its own featured section, the footer and the JSON-LD with no code change.
+Add `scene {file, alt, focus}` (a photo of the app in use) for its home showcase. It then gets a showcase, its own page, a footer link and JSON-LD with no code change.
 The hero shows the first two live apps.
 
 ## Anti-references

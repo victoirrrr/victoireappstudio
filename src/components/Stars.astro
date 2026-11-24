@@ -1,0 +1,40 @@
+---
+// Five stars, filled to `value` out of 5 in crimson over grey.
+interface Props {
+  value: number;
+  size?: 'md' | 'lg';
+  /** Read the value out to screen readers (for a single review); otherwise hidden. */
+  label?: boolean;
+}
+const { value, size = 'md', label = false } = Astro.props;
+const fill = `${(value / 5) * 100}%`;
+---
+
+<span
+  class:list={['stars', `stars--${size}`]}
+  style={`--fill:${fill}`}
+  role={label ? 'img' : undefined}
+  aria-label={label ? `${value} out of 5 stars` : undefined}
+  aria-hidden={label ? undefined : 'true'}
+>★★★★★</span>
+
+<style>
+  .stars {
+    position: relative;
+    display: inline-block;
+    width: max-content;
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    color: var(--line-strong);
+  }
+  .stars::after {
+    content: '★★★★★';
+    position: absolute;
+    inset: 0;
+    width: var(--fill);
+    overflow: hidden;
+    color: var(--crimson);
+  }
+  .stars--lg { font-size: 1.375rem; }
+</style>

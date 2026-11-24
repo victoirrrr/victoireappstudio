@@ -1,0 +1,97 @@
+---
+// An app's average App Store rating and its real reviews, quoted as written. No review count.
+// The app page shows them all; `limit` trims the list.
+import type { App } from '../lib/apps';
+import Stars from './Stars.astro';
+
+interface Props {
+  app: App;
+  limit?: number;
+  headingId: string;
+}
+const { app, limit, headingId } = Astro.props;
+const reviews = (app.reviews ?? []).slice(0, limit);
+---
+
+{reviews.length > 0 && (
+  <div class="reviews">
+    <div class="reviews__head" data-pop>
+      <h2 id={headingId} class="reviews__title">What people say about {app.name}</h2>
+      {app.rating && (
+        <p class="reviews__avg">
+          <span class="reviews__num">{app.rating.toFixed(1)}</span>
+          <Stars value={app.rating} size="lg" />
+          <span class="reviews__label">Average rating on the App Store</span>
+        </p>
+      )}
+    </div>
+    <ul class="reviews__list">
+      {reviews.map((r, i) => (
+        <li class="review" data-pop style={`--d:${i + 1}`}>
+          <Stars value={r.stars} label />
+          <blockquote>
+            {r.title && <p class="review__title">{r.title}</p>}
+            <p>{r.text}</p>
+          </blockquote>
+          <p class="review__by">{[r.author, r.country].filter(Boolean).join(' · ') || 'App Store review'}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+<style>
+  .reviews__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--s-4) var(--s-6);
+    padding-bottom: var(--s-5);
+    margin-bottom: var(--s-6);
+    border-bottom: 1px solid var(--line);
+  }
+  .reviews__title { font-size: var(--fs-h3); max-width: 18ch; }
+  .reviews__avg { display: grid; grid-template-columns: auto auto; align-items: center; column-gap: var(--s-3); }
+  .reviews__num { font-size: 3rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; grid-row: span 2; }
+  .reviews__label { font-size: var(--fs-small); color: var(--ink-2); }
+  .reviews__list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--s-4);
+  }
+  .review {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    transition: translate var(--t-spring) var(--spring), box-shadow var(--t-fast) var(--ease);
+  }
+  .review:hover { translate: 0 -4px; box-shadow: var(--shadow-soft); }
+  .review blockquote { margin: 0; display: grid; gap: var(--s-2); flex: 1; }
+  .review__title { font-weight: 600; }
+  .review blockquote p:last-child { color: var(--ink-2); }
+  .review__by { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); }
+
+  @media (max-width: 767px) {
+    /* phones: a swipeable row instead of a tall stack */
+    .reviews__list {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 82%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(-1 * var(--gutter));
+      padding: var(--s-2) var(--gutter) var(--s-4);
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .reviews__list::-webkit-scrollbar { display: none; }
+    .review { scroll-snap-align: start; }
+  }
+</style>

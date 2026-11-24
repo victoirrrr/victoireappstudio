@@ -1,0 +1,270 @@
+---
+// One page per live app (/kwesti, /morb): everything about it in one place. The intro with the
+// App Store badge, the photo of it in use, its real screens in phone frames, what it does, every
+// review, then help: privacy, terms and the studio email. Unlaunched apps get no page.
+import type { GetStaticPaths } from 'astro';
+import { Picture } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Reviews from '../../components/Reviews.astro';
+import Stars from '../../components/Stars.astro';
+import { getApps, storeLink, type App } from '../../lib/apps';
+import { appJsonLd, graph } from '../../lib/jsonld';
+
+export const getStaticPaths = (async () => {
+  const apps = await getApps();
+  return apps.filter((a) => a.isLive).map((app) => ({ params: { app: app.slug }, props: { app } }));
+}) satisfies GetStaticPaths;
+
+const { app } = Astro.props as { app: App };
+const EMAIL = 'hello@victoirappstudio.com';
+const store = storeLink(app, `page-${app.slug}`);
+const docs = (await getCollection('legal')).filter((d) => d.data.app === app.slug);
+const has = (kind: string) => docs.some((d) => d.data.kind === kind);
+const screens = app.screens.slice(0, 5).map((file, i) => ({
+  img: app.screenImages[i],
+  alt: `${app.name} screen: ${file.replace(/^\d+[-_]/, '').replace(/\.png$/, '').replace(/[-_]/g, ' ')}`,
+}));
+const help = [
+  has('privacy') && { href: `/${app.slug}/privacy`, title: 'Privacy policy', note: 'What the app keeps, and where.' },
+  has('terms') && { href: `/${app.slug}/terms`, title: 'Terms of use', note: 'The rules for using the app.' },
+  { href: `mailto:${EMAIL}?subject=${encodeURIComponent(`${app.name} support`)}`, title: 'Email support', note: EMAIL },
+].filter(Boolean) as { href: string; title: string; note: string }[];
+const f = app.feature;
+const arrow = '<path d="M3 9 9 3M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />';
+---
+
+<Base
+  title={`${app.name}: ${app.subtitle ?? app.tagline} · Victoir App Studio`}
+  description={app.oneLiner}
+  appStoreId={app.appStoreId}
+  jsonLd={graph([appJsonLd(app, Astro.site!)])}
+>
+  <Nav />
+  <main id="main">
+    <section class="intro" aria-labelledby="app-h">
+      <div class="wrap intro__grid">
+        <div class="intro__text">
+          {app.iconImage && (
+            <div data-pop><Picture src={app.iconImage} formats={['avif']} fallbackFormat="webp" width={88} height={88} densities={[1, 2]} alt={`${app.name} app icon`} class="app-icon intro__icon" loading="eager" /></div>
+          )}
+          <p class="eyebrow" data-pop style="--d:1">{app.facts}</p>
+          <h1 id="app-h" data-pop style="--d:2">{app.name}</h1>
+          <p class="intro__sub" data-pop style="--d:2">{app.subtitle}</p>
+          <p class="lead" data-pop style="--d:3">{app.oneLiner}</p>
+          {app.rating && (
+            <p class="intro__rating" data-pop style="--d:3"><strong>{app.rating.toFixed(1)}</strong> <Stars value={app.rating} /> <span>Average rating on the App Store</span></p>
+          )}
+          <div class="intro__actions" data-pop style="--d:4">
+            {store && (
+              <a class="intro__badge" href={store} rel="noopener" aria-label={`Download ${app.name} on the App Store`}>
+                <img src="/badges/app-store-black.svg" alt="" width="120" height="40" />
+              </a>
+            )}
+            <a class="link-arrow" href="#help">Help and support <svg viewBox="0 0 12 12" aria-hidden="true" set:html={arrow} /></a>
+          </div>
+          {app.priceNote && <p class="intro__note" data-pop style="--d:5">{app.price}. {app.priceNote}.</p>}
+        </div>
+        {app.promoImages && (
+          <div class="intro__shot" data-pop style="--d:2">
+            <Picture src={app.promoImages.hero} formats={['avif']} fallbackFormat="webp" widths={[340, 680]} sizes="(max-width: 767px) 70vw, 340px" alt={`${app.name} on the App Store`} loading="eager" fetchpriority="high" />
+          </div>
+        )}
+      </div>
+    </section>
+
+    {app.sceneImage && (
+      <div class="wrap">
+        <div class="photo" data-pop>
+          <Picture src={app.sceneImage} formats={['avif']} fallbackFormat="webp" widths={[640, 1000, 1400, 1774]} sizes="(max-width: 1248px) calc(100vw - 48px), 1200px" alt={app.scene!.alt} style={`object-position:${app.scene!.focus}`} />
+        </div>
+      </div>
+    )}
+
+    {screens.length > 0 && (
+      <section class="section screens" aria-labelledby="screens-h">
+        <div class="wrap">
+          <p class="eyebrow" data-pop>Inside the app</p>
+          <h2 id="screens-h" data-pop style="--d:1">{app.name}, screen by screen.</h2>
+          <ul class="screens__row">
+            {screens.map((s, i) => (
+              <li class="phone" data-pop style={`--d:${i + 1}`}>
+                <Picture src={s.img} formats={['avif']} fallbackFormat="webp" widths={[220, 440]} sizes="220px" alt={s.alt} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    {f && (
+      <section class="section what" aria-labelledby="what-h">
+        <div class="wrap what__grid">
+          <div class="what__text">
+            <p class="eyebrow" data-pop>What it does</p>
+            <h2 id="what-h" data-pop style="--d:1">{f.title}</h2>
+            <p class="lead" data-pop style="--d:2">{f.body}</p>
+          </div>
+          <div class="what__rows" data-pop style="--d:3">
+            <p class="what__rows-title">{f.rowsTitle}</p>
+            <ol>
+              {f.rows.map((r, i) => (
+                <li>
+                  <span class="what__num" aria-hidden="true">{i + 1}</span>
+                  <span class="what__row-title">{r.title}</span>
+                  <span class="what__note">{r.note}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {app.reviews && app.reviews.length > 0 && (
+      <section class="section" aria-labelledby="reviews-h">
+        <div class="wrap"><Reviews app={app} headingId="reviews-h" /></div>
+      </section>
+    )}
+
+    <section class="section help" id="help" aria-labelledby="help-h">
+      <div class="wrap">
+        <p class="eyebrow" data-pop>Help</p>
+        <h2 id="help-h" data-pop style="--d:1">Questions about {app.name}?</h2>
+        <p class="lead" data-pop style="--d:2">Support, feedback or a bug to report, I read and answer every email myself.</p>
+        <ul class="help__list">
+          {help.map((h, i) => (
+            <li data-pop style={`--d:${i + 3}`}>
+              <a class="help__card" href={h.href}>
+                <span class="help__title">{h.title} <svg viewBox="0 0 12 12" aria-hidden="true" set:html={arrow} /></span>
+                <span class="help__note">{h.note}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  /* ---------- intro */
+  .intro { padding-top: calc(var(--nav-h) + var(--s-8)); padding-bottom: var(--s-8); overflow: clip; }
+  .intro__grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--s-8); align-items: center; }
+  .intro__text { display: grid; gap: var(--s-4); justify-items: start; }
+  .intro__text :global(.intro__icon) { width: 88px; height: 88px; box-shadow: var(--shadow-icon); transition: transform var(--t-spring) var(--spring); }
+  .intro__text :global(.intro__icon:hover) { transform: rotate(-10deg) scale(1.08); }
+  .intro__sub { font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; color: var(--ink-2); margin-top: calc(-1 * var(--s-2)); }
+  .intro__rating { display: flex; align-items: center; gap: var(--s-2); color: var(--ink-2); font-size: var(--fs-small); }
+  .intro__rating strong { font-size: 1.25rem; color: var(--ink); }
+  .intro__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); margin-top: var(--s-2); }
+  .intro__badge { display: block; transition: transform var(--t-spring) var(--spring); }
+  .intro__badge:hover { transform: translateY(-3px); }
+  .intro__badge img { height: 48px; width: auto; }
+  .intro__note { font-size: var(--fs-small); color: var(--ink-2); }
+  .intro__shot {
+    justify-self: center;
+    width: min(340px, 70vw);
+    border-radius: var(--r-card);
+    overflow: clip;
+    box-shadow: var(--shadow-phone);
+    rotate: 4deg;
+    transition: rotate var(--t-spring) var(--spring);
+  }
+  .intro__shot:hover { rotate: 0deg; }
+  .intro__shot :global(img) { width: 100%; height: auto; }
+
+  /* ---------- photo */
+  .photo { aspect-ratio: 2 / 1; border-radius: var(--r-panel); overflow: clip; box-shadow: var(--shadow-soft); }
+  .photo :global(picture) { display: block; height: 100%; }
+  .photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ---------- screens */
+  .screens h2 { margin: var(--s-4) 0 var(--s-7); max-width: 16ch; }
+  .screens__row {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--s-5);
+  }
+  .phone {
+    padding: 7px;
+    border-radius: 40px;
+    background: #0E0B0D;
+    box-shadow: var(--shadow-phone), inset 0 0 0 1px rgb(255 255 255 / 0.12);
+    transition: translate var(--t-spring) var(--spring), rotate var(--t-spring) var(--spring);
+  }
+  .phone:nth-child(even) { translate: 0 var(--s-6); }
+  .phone:hover { rotate: -2deg; translate: 0 -6px; }
+  .phone:nth-child(even):hover { translate: 0 calc(var(--s-6) - 6px); }
+  .phone :global(img) { width: 100%; height: auto; border-radius: 33px; display: block; }
+
+  /* ---------- what it does */
+  .what { background: var(--canvas-2); }
+  .what__grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-8); align-items: center; }
+  .what__text { display: grid; gap: var(--s-4); justify-items: start; }
+  .what__text h2 { max-width: 14ch; }
+  .what__rows-title { font-size: var(--fs-small); font-weight: 600; color: var(--ink-2); margin-bottom: var(--s-3); }
+  .what__rows ol { list-style: none; padding: 0; border-top: 1px solid var(--line-strong); }
+  .what__rows li {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+    gap: var(--s-4);
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--line-strong);
+    transition: transform var(--t-spring) var(--spring);
+  }
+  .what__rows li:hover { transform: translateX(6px); }
+  .what__num { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--ink); color: #fff; font-size: var(--fs-small); font-weight: 700; }
+  .what__row-title { font-weight: 600; }
+  .what__note { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); }
+
+  /* ---------- help */
+  .help h2 { margin: var(--s-4) 0 var(--s-3); }
+  .help__list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); margin-top: var(--s-7); }
+  .help__card {
+    height: 100%;
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-5);
+    border-radius: var(--r-card);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    transition: translate var(--t-spring) var(--spring), border-color var(--t-fast) var(--ease);
+  }
+  .help__card:hover { translate: 0 -4px; border-color: var(--crimson); }
+  .help__title { display: flex; align-items: center; justify-content: space-between; font-size: 1.125rem; font-weight: 600; }
+  .help__title svg { width: 12px; height: 12px; color: var(--crimson-text); }
+  .help__note { font-size: var(--fs-small); color: var(--ink-2); overflow-wrap: anywhere; }
+
+  @media (max-width: 1023px) {
+    .intro__grid, .what__grid { grid-template-columns: 1fr; gap: var(--s-7); }
+    .photo { aspect-ratio: 16 / 10; }
+    .screens__row {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 200px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(-1 * var(--gutter));
+      padding: var(--s-2) var(--gutter) var(--s-8);
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .screens__row::-webkit-scrollbar { display: none; }
+    .phone { scroll-snap-align: start; }
+    .help__list { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 767px) {
+    .intro { padding-top: calc(var(--nav-h) + var(--s-6)); }
+    .photo { aspect-ratio: 4 / 3; border-radius: var(--r-card); }
+    .screens__row { grid-auto-columns: 170px; }
+  }
+</style>

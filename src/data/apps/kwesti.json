@@ -52,7 +52,7 @@
   ],
   "breakout": "breakout.png",
   "family": null,
-  "siteUrl": "https://kwesti.co",
+  "siteUrl": "/kwesti",
   "privacyUrl": "/kwesti/privacy",
   "supportUrl": null,
   "supportEmail": "hello@victoirappstudio.com",
@@ -112,5 +112,10 @@
       "country": "Australia"
     }
   ],
-  "termsUrl": "/kwesti/terms"
+  "termsUrl": "/kwesti/terms",
+  "scene": {
+    "file": "scene.webp",
+    "alt": "A hand holding an iPhone open on Kwesti’s Journey page, with three photo prints from week 3, beside a sunny window and a glass of tea",
+    "focus": "62% 50%"
+  }
 }

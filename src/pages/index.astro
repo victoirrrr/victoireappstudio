@@ -1,20 +1,18 @@
 ---
-// Home (DESIGN.md v2): nav, split hero, ticker, dark apps list, one featured section per live app,
-// the studio, the contact panel, the footer. Unlaunched apps show only as blank "Coming soon" slots.
+// Home (DESIGN.md v3): nav, split hero, one photo showcase per live app (each linking to its own
+// page), the studio with the email, the slim footer. Unlaunched apps show only as a blank
+// "Coming soon" tile in the hero and a count in the studio note.
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
-import Apps from '../components/Apps.astro';
-import Feature from '../components/Feature.astro';
+import Showcase from '../components/Showcase.astro';
 import Studio from '../components/Studio.astro';
-import Ticker from '../components/Ticker.astro';
-import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 import { getApps } from '../lib/apps';
 import { appJsonLd, graph } from '../lib/jsonld';
 
 const apps = await getApps();
-const featured = apps.filter((a) => a.isLive && a.feature && a.promoImages);
+const shown = apps.filter((a) => a.isLive && a.feature && a.sceneImage);
 const jsonLd = graph([
   { '@type': 'Organization', name: 'Victoir App Studio', url: Astro.site!.toString(), logo: new URL('/icon-512.png', Astro.site).toString(), founder: { '@type': 'Person', name: 'Vijay Kumar' } },
   ...apps.filter((a) => a.isLive).map((a) => appJsonLd(a, Astro.site!)),
@@ -22,7 +20,7 @@ const jsonLd = graph([
 ---
 
 <Base
-  title="Victoir App Studio: iPhone apps by Vijay Kumar"
+  title="Victoir App Studio: iPhone apps built with real purpose"
   description="Kwesti and Morb: iPhone apps for weekly side quests and for phone recordings that sound studio-made, made by one person."
   ogImage="/og/home.png"
   jsonLd={jsonLd}
@@ -30,11 +28,21 @@ const jsonLd = graph([
   <Nav />
   <main id="main">
     <Hero />
-    <Ticker />
-    <Apps />
-    {featured.map((app, i) => <Feature app={app} flip={i % 2 === 1} />)}
+    <section class="section apps" id="apps" aria-labelledby="apps-h">
+      <div class="wrap">
+        <div class="apps__head" data-pop>
+          <p class="eyebrow">The apps</p>
+          <h2 id="apps-h">Each one fixes <span class="accent">something real.</span></h2>
+        </div>
+        {shown.map((app, i) => <Showcase app={app} index={i} />)}
+      </div>
+    </section>
     <Studio />
-    <Contact />
   </main>
   <Footer />
 </Base>
+
+<style>
+  .apps__head { display: grid; gap: var(--s-4); margin-bottom: var(--s-7); }
+  .apps__head h2 { max-width: 16ch; }
+</style>

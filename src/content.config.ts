@@ -34,6 +34,9 @@ const apps = defineCollection({
     tagline: z.string().optional(),
     // App Store marketing screenshots in src/assets/apps/<slug>/promo/, by slot on the home page.
     promo: z.object({ hero: z.string(), list: z.string(), feature: z.string(), extra: z.string() }).optional(),
+    // The home showcase photo: the app in use (src/assets/apps/<slug>/<file>), its alt text, and
+    // where to keep in frame when a narrow screen crops it (object-position).
+    scene: z.object({ file: z.string(), alt: z.string(), focus: z.string().default('50% 50%') }).optional(),
     // The featured-app section: headline, body and three rows (title + short note).
     feature: z
       .object({

@@ -1,9 +1,9 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
 
-// Every PNG under src/assets/apps/<slug>/ is imported here so Astro can turn it into
+// Every PNG and WebP under src/assets/apps/<slug>/ is imported here so Astro can turn it into
 // AVIF/WebP at 1x and 2x. Raw PNGs never reach dist/.
-const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/apps/**/*.png', {
+const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/apps/**/*.{png,webp}', {
   eager: true,
 });
 
@@ -23,6 +23,8 @@ export interface App extends AppData {
   screenImages: ImageMetadata[];
   breakoutImage: ImageMetadata | null;
   /** App Store marketing screenshots by home-page slot, when the app has them. */
+  /** The lifestyle photo for the home showcase (the app in use), when the app has one. */
+  sceneImage: ImageMetadata | null;
   promoImages: { hero: ImageMetadata; list: ImageMetadata; feature: ImageMetadata; extra: ImageMetadata } | null;
   /** Present when the app is live and has spotlightTitle + spotlight in its JSON. */
   spot: { screens: ImageMetadata[]; card: ImageMetadata; cardFocus: string } | null;
@@ -42,6 +44,7 @@ export async function getApps(): Promise<App[]> {
       iconImage: data.icon ? img(data.slug, 'icon.png') : null,
       screenImages: data.screens.map((s) => img(data.slug, `screens/${s}`)),
       breakoutImage: data.breakout ? img(data.slug, data.breakout) : null,
+      sceneImage: data.scene ? img(data.slug, data.scene.file) : null,
       promoImages: data.promo
         ? {
             hero: img(data.slug, `promo/${data.promo.hero}`),

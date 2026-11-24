@@ -1,34 +1,18 @@
 ---
-// Dark footer: logo and one line, then Apps, Help and Studio columns, then the legal row.
-// Only live apps are listed; nothing about unlaunched apps is public.
+// Slim dark footer: the logo and a line, one row of links (each live app's page, the studio, the
+// email), then © and the Apple line. Each app's privacy, terms and support live on its own page.
 import { Image } from 'astro:assets';
 import logoLight from '../assets/brand/logo-light.png';
-import { getApps, storeLink } from '../lib/apps';
+import { getApps } from '../lib/apps';
 
 const apps = (await getApps()).filter((a) => a.isLive);
-type L = { label: string; href: string };
-const appLinks: L[] = apps.flatMap((a) => {
-  const s = storeLink(a, 'footer');
-  return s ? [{ label: a.name, href: s }] : [];
-});
-const help: L[] = [];
-for (const a of apps) {
-  if (a.privacyUrl) help.push({ label: `${a.name} privacy`, href: a.privacyUrl });
-  if (a.termsUrl) help.push({ label: `${a.name} terms`, href: a.termsUrl });
-  const s = a.supportUrl ?? (a.supportEmail ? `mailto:${a.supportEmail}` : null);
-  if (s) help.push({ label: `${a.name} support`, href: s });
-}
 const EMAIL = 'hello@victoirappstudio.com';
-const studio: L[] = [
-  { label: 'About', href: '/#studio' },
-  { label: 'Contact', href: `mailto:${EMAIL}` },
+const links = [
+  ...apps.map((a) => ({ label: a.name, href: `/${a.slug}` })),
+  { label: 'Studio', href: '/#studio' },
+  { label: EMAIL, href: `mailto:${EMAIL}` },
 ];
 const year = new Date().getFullYear();
-const cols = [
-  { title: 'Apps', links: appLinks },
-  { title: 'Help', links: help },
-  { title: 'Studio', links: studio },
-];
 ---
 
 <footer class="footer">
@@ -36,20 +20,15 @@ const cols = [
     <div class="footer__top">
       <div class="footer__brand">
         <a href="/" aria-label="Victoir App Studio, home" class="footer__logo">
-          <Image src={logoLight} alt="" width={160} densities={[1, 2]} />
+          <Image src={logoLight} alt="" width={140} densities={[1, 2]} />
         </a>
         <p>iPhone apps made by one person, since 2025.</p>
       </div>
-      {cols.map((c) => (
-        <nav class="footer__col" aria-label={c.title}>
-          <p class="footer__title">{c.title}</p>
-          <ul>
-            {c.links.map((l) => (
-              <li><a href={l.href} rel={/^https?:/.test(l.href) ? 'noopener' : undefined}>{l.label}</a></li>
-            ))}
-          </ul>
-        </nav>
-      ))}
+      <nav aria-label="Footer">
+        <ul class="footer__links">
+          {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </nav>
     </div>
     <div class="footer__legal">
       <p>© {year} Victoir App Studio</p>
@@ -62,49 +41,37 @@ const cols = [
   .footer {
     background: var(--night);
     color: var(--night-ink-2);
-    padding-block: var(--s-8) var(--s-6);
+    padding-block: var(--s-7) var(--s-5);
     font-size: var(--fs-small);
   }
   .footer__top {
-    display: grid;
-    grid-template-columns: 2fr repeat(3, 1fr);
-    gap: var(--s-6);
-    padding-bottom: var(--s-7);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5) var(--s-7);
+    padding-bottom: var(--s-6);
     border-bottom: 1px solid var(--night-line);
   }
-  .footer__brand { display: grid; gap: var(--s-4); align-content: start; }
+  .footer__brand { display: grid; gap: var(--s-3); }
   .footer__logo { display: inline-block; width: max-content; transition: transform var(--t-spring) var(--spring); }
   .footer__logo:hover { transform: rotate(-3deg) scale(1.04); }
-  .footer__logo img { width: 160px; height: auto; }
-  .footer__title {
-    font-family: var(--font-mono);
-    font-size: var(--fs-eyebrow);
-    letter-spacing: var(--track-eyebrow);
-    text-transform: uppercase;
-    color: var(--night-ink);
-    margin-bottom: var(--s-3);
-  }
-  .footer__col ul { list-style: none; padding: 0; }
-  .footer__col a {
+  .footer__logo img { width: 140px; height: auto; }
+  .footer__links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0 var(--s-5); }
+  .footer__links a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+    color: var(--night-ink);
     text-decoration: none;
     transition: color var(--t-fast) var(--ease), transform var(--t-spring) var(--spring);
   }
-  .footer__col a:hover { color: var(--night-ink); transform: translateX(4px); }
+  .footer__links a:hover { color: var(--crimson-night); transform: translateY(-2px); }
   .footer__legal {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: var(--s-2) var(--s-5);
     padding-top: var(--s-5);
-  }
-  @media (max-width: 1023px) {
-    .footer__top { grid-template-columns: repeat(3, 1fr); }
-    .footer__brand { grid-column: 1 / -1; }
-  }
-  @media (max-width: 479px) {
-    .footer__top { grid-template-columns: 1fr 1fr; }
   }
 </style>

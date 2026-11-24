@@ -13,7 +13,7 @@ export const getStaticPaths = (async () => {
 const { entry } = Astro.props;
 const app = (await getApps()).find((a) => a.slug === entry.data.app);
 const { Content } = await render(entry);
-const hasPage = Boolean(app?.isLive && app.siteUrl === `/${app.slug}`);
+const hasPage = Boolean(app?.isLive);
 ---
 
 <Doc
