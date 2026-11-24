@@ -24,6 +24,8 @@ Design system: @DESIGN.md (single source of truth; never invent colours, fonts o
   rules; close its gate with --done and the owner's words. Font is Apple's system stack (SF Pro).
 - Unlaunched apps (Kit, Kit Pouch, GLP-1) are anonymous "Coming soon" slots: never show their name,
   icon, screens or copy on public pages, sitemap or footer.
+- One email for everything, on every app's pages (contact, support, privacy, terms): hello@victoirappstudio.com.
+  Never hello@morbapp.com or hello@kwesti.co.
 - Owner-confirmed figures only: building since 2025, 500+ downloads, 4.8 average rating.
 
 ## Reference

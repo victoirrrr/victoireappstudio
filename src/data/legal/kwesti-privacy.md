@@ -15,7 +15,7 @@ updated: 2026-10-19
 
 ## Who we are
 
-Kwesti is an iPhone app made by an independent developer based in India. In this policy, “Kwesti”, “we” and “us” mean the app and the person who makes it. If you have any question about your data, write to [hello@kwesti.co](mailto:hello@kwesti.co).
+Kwesti is an iPhone app made by an independent developer based in India. In this policy, “Kwesti”, “we” and “us” mean the app and the person who makes it. If you have any question about your data, write to [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).
 
 ## What the app keeps, and where
 
@@ -45,7 +45,7 @@ If you turn them on, Kwesti sends one reminder on Monday morning when your new t
 
 ## When you write to us
 
-The “Write to me” option in Settings opens your own email app with a message to [hello@kwesti.co](mailto:hello@kwesti.co). If you send it, we receive your email address and whatever you write. We use it only to read and reply to your message, and we don't add you to any mailing list.
+The “Write to me” option in Settings opens your own email app with a message to [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com). If you send it, we receive your email address and whatever you write. We use it only to read and reply to your message, and we don't add you to any mailing list.
 
 ## Sharing a print
 
@@ -65,7 +65,7 @@ Kwesti is not directed at children under 13, and we don't knowingly collect info
 
 ## Your rights
 
-Depending on where you live, including under India's Digital Personal Data Protection Act and the GDPR in Europe, you may have rights to access, correct or delete your personal data. Almost all of it is already in your hands on your iPhone and in your iCloud. For anything you've sent us by email, write to [hello@kwesti.co](mailto:hello@kwesti.co) and we'll help.
+Depending on where you live, including under India's Digital Personal Data Protection Act and the GDPR in Europe, you may have rights to access, correct or delete your personal data. Almost all of it is already in your hands on your iPhone and in your iCloud. For anything you've sent us by email, write to [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com) and we'll help.
 
 ## Changes to this policy
 
@@ -73,4 +73,4 @@ If the app starts handling data differently, we'll update this page and change t
 
 ## Contact
 
-Questions about privacy go to [hello@kwesti.co](mailto:hello@kwesti.co).
+Questions about privacy go to [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).

@@ -67,4 +67,4 @@ These terms are governed by the laws of India, and the courts of Gurugram, Harya
 
 ## Contact
 
-Questions about these terms? Email [hello@morbapp.com](mailto:hello@morbapp.com).
+Questions about these terms? Email [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).

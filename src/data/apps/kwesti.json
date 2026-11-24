@@ -54,8 +54,8 @@
   "family": null,
   "siteUrl": "https://kwesti.co",
   "privacyUrl": "/kwesti/privacy",
-  "supportUrl": "https://kwesti.co",
-  "supportEmail": null,
+  "supportUrl": null,
+  "supportEmail": "hello@victoirappstudio.com",
   "tagline": "Weekly side quests",
   "promo": {
     "hero": "25.png",

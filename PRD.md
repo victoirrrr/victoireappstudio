@@ -61,7 +61,7 @@ Order on the page: **Kwesti > Morb > Kit family (Kit, Kit Pouch, GLP-1).**
 | App Store URL | apps.apple.com/us/app/kwesti-weekly-side-quests/id6770004221 | apps.apple.com/us/app/morb-one-touch-audio-enhancer/id6784659337 | none yet | none yet | none |
 | Own site | kwesti.co | morbapp.com | victoirappstudio.com/kit | victoirappstudio.com/kit-pouch | later |
 | Privacy | kwesti.co/privacy | morbapp.com/privacy | /kit/privacy (new) | /kit-pouch/privacy (new) | later |
-| Support | via kwesti.co | hello@morbapp.com | /kit/support (new) | /kit-pouch/support (new) | later |
+| Support | via kwesti.co | hello@victoirappstudio.com | /kit/support (new) | /kit-pouch/support (new) | later |
 | Assets in repo | icon + 8 screens | icon + 8 screens | icon + 7 screens | icon only | none |
 
 **One-liners (draft, owner to confirm):**

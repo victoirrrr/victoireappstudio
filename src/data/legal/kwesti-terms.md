@@ -51,4 +51,4 @@ We may update these terms from time to time. When we do, we'll change the date a
 
 ## Contact
 
-Questions about these terms go to [hello@kwesti.co](mailto:hello@kwesti.co).
+Questions about these terms go to [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).

@@ -76,4 +76,4 @@ If we change how Morb handles information, we'll update this page and the date a
 
 ## Contact
 
-Questions about privacy? Email [hello@morbapp.com](mailto:hello@morbapp.com).
+Questions about privacy? Email [hello@victoirappstudio.com](mailto:hello@victoirappstudio.com).
