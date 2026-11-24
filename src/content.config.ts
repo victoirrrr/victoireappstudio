@@ -76,6 +76,7 @@ const apps = defineCollection({
     siteUrl: z.string().nullable(),
     privacyUrl: z.string().nullable(),
     supportUrl: z.string().nullable(),
+    termsUrl: z.string().nullable().optional(),
     supportEmail: z.string().email().nullable(),
   }),
 });
@@ -86,7 +87,7 @@ const legal = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/data/legal' }),
   schema: z.object({
     app: z.string(),
-    kind: z.enum(['privacy', 'support']),
+    kind: z.enum(['privacy', 'support', 'terms']),
     title: z.string(),
     description: z.string(),
     updated: z.coerce.date(),

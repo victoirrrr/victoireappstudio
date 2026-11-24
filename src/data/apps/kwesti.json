@@ -53,7 +53,7 @@
   "breakout": "breakout.png",
   "family": null,
   "siteUrl": "https://kwesti.co",
-  "privacyUrl": "https://kwesti.co/privacy",
+  "privacyUrl": "/kwesti/privacy",
   "supportUrl": "https://kwesti.co",
   "supportEmail": null,
   "tagline": "Weekly side quests",
@@ -111,5 +111,6 @@
       "author": "Pirate king Kk",
       "country": "Australia"
     }
-  ]
+  ],
+  "termsUrl": "/kwesti/terms"
 }

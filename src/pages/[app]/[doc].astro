@@ -1,5 +1,5 @@
 ---
-// /<app>/privacy and /<app>/support, from src/data/legal/<app>-<kind>.md.
+// /<app>/privacy, /<app>/support and /<app>/terms, from src/data/legal/<app>-<kind>.md.
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
 import Doc from '../../layouts/Doc.astro';
@@ -19,7 +19,7 @@ const hasPage = Boolean(app?.isLive && app.siteUrl === `/${app.slug}`);
 <Doc
   title={entry.data.title}
   description={entry.data.description}
-  eyebrow={`${app?.name ?? entry.data.app} · ${entry.data.kind === 'privacy' ? 'Privacy' : 'Support'}`}
+  eyebrow={`${app?.name ?? entry.data.app} · ${{ privacy: 'Privacy', support: 'Support', terms: 'Terms' }[entry.data.kind]}`}
   updated={entry.data.updated}
   back={hasPage && app ? { href: `/${app.slug}`, label: `Back to ${app.name}` } : null}
 >

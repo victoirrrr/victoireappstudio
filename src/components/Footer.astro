@@ -14,6 +14,7 @@ const appLinks: L[] = apps.flatMap((a) => {
 const help: L[] = [];
 for (const a of apps) {
   if (a.privacyUrl) help.push({ label: `${a.name} privacy`, href: a.privacyUrl });
+  if (a.termsUrl) help.push({ label: `${a.name} terms`, href: a.termsUrl });
   const s = a.supportUrl ?? (a.supportEmail ? `mailto:${a.supportEmail}` : null);
   if (s) help.push({ label: `${a.name} support`, href: s });
 }

@@ -54,7 +54,7 @@
   "breakout": "breakout.png",
   "family": null,
   "siteUrl": "https://morbapp.com",
-  "privacyUrl": "https://morbapp.com/privacy",
+  "privacyUrl": "/morb/privacy",
   "supportUrl": null,
   "supportEmail": "hello@morbapp.com",
   "tagline": "Studio sound from a phone",
@@ -97,5 +97,6 @@
       "stars": 5,
       "text": "Does what it says, simple app."
     }
-  ]
+  ],
+  "termsUrl": "/morb/terms"
 }
