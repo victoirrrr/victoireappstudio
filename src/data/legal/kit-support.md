@@ -3,7 +3,7 @@ app: kit
 kind: support
 title: Kit help
 description: Answers to common questions about Kit, the drink diary, and how to reach me.
-updated: 2026-11-18
+updated: 2026-11-27
 ---
 
 ## Get in touch
@@ -28,9 +28,13 @@ Only you. They stay on your iPhone. If you turn on Sync with iCloud, a copy also
 
 It notes a day without drinks, so the day counts as one. A day with nothing logged stays "not logged", and Kit never guesses.
 
+### Why does Kit look tired?
+
+Kit reflects your last seven logged days. Any drinks in them show on Kit: duller, droopier and, after a lot, grey and melted. Each day you log with no drinks helps Kit feel better, and seven bring it back. A day with nothing logged changes nothing.
+
 ### What is free, and what is Kit Pro?
 
-Logging and your whole history are always free. Kit Pro adds Insights, Mornings, sleep from Apple Health, the monthly letter, Customize Kit, the Face ID lock, CSV export and writing your drinks to Health. The free trial lasts 14 days from your first log.
+Logging and your whole history are always free. Kit Pro adds Insights, Mornings, sleep from Apple Health, the monthly letter, Customize Kit, the Face ID lock, CSV export and writing your drinks to Health. The free trial lasts 14 days from your first log. If your trial starts before 1 February 2027, Kit Pro is free until 31 January 2027.
 
 ### How do I restore or cancel Kit Pro?
 
