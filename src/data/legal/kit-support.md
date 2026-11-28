@@ -34,7 +34,7 @@ Kit reflects your last seven logged days. Any drinks in them show on Kit: duller
 
 ### What is free, and what is Kit Pro?
 
-Logging and your whole history are always free. Kit Pro adds Insights, Mornings, sleep from Apple Health, the monthly letter, Customize Kit, the Face ID lock, CSV export and writing your drinks to Health. The free trial lasts 14 days from your first log. If your trial starts before 1 February 2027, Kit Pro is free until 31 January 2027.
+Logging and your whole history are always free. Kit Pro adds Insights, Mornings, sleep from Apple Health, the monthly letter, Customize Kit, the Face ID lock, CSV export and writing your drinks to Health. Kit Pro is free for 14 days from your first log. After that, Kit Pro features lock until you subscribe, and logging and your history stay free.
 
 ### How do I restore or cancel Kit Pro?
 
